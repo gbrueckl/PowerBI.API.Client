@@ -265,6 +265,32 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 string result = response.ResponseToString();
             }
         }
-        #endregion  
+
+        public List<PBISequenceNumber> GetSequenceNumbers(PBIAPIClient powerBiAPI = null)
+        {
+            if (ParentDataset == null)
+                throw new Exception("Cannot delete rows from PowerBI table as the table is not linked to a DataSet in PowerBI!");
+
+            if (Name == null)
+                throw new Exception("Cannot add row to PowerBI table as the table does not have a name!");
+
+            if (powerBiAPI == null)
+            {
+                if (ParentDataset.ParentPowerBIAPI == null)
+                    throw new Exception("No PowerBI API Object was supplied!");
+                else
+                    powerBiAPI = ParentDataset.ParentPowerBIAPI;
+            }
+
+            PBIObjectList<PBISequenceNumber> objList = JsonConvert.DeserializeObject<PBIObjectList<PBISequenceNumber>>(powerBiAPI.SendGETRequest(ApiURL + "/sequenceNumbers").ResponseToString());
+
+            foreach (var item in objList.Items)
+            {
+                item.ParentTable = this;
+            }
+
+            return objList.Items;
+        }
+        #endregion
     }
 }

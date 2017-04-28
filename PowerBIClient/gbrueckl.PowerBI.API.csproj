@@ -77,6 +77,7 @@
     <Compile Include="PowerBIObjects\PBIDataset.cs" />
     <Compile Include="PowerBIObjects\PBIMeasure.cs" />
     <Compile Include="PowerBIObjects\PBIReport.cs" />
+    <Compile Include="PowerBIObjects\PBISequenceNumber.cs" />
     <Compile Include="PowerBIObjects\PBIRow.cs" />
     <Compile Include="PowerBIObjects\PBITable.cs" />
     <Compile Include="PowerBIObjects\PBITile.cs" />

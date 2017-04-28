@@ -56,11 +56,12 @@ namespace SampleApplication
             // create a PBI table from a regular DataTable object
             PBITable productsTable = new PBITable(dataTable);
 
-            // 
             dataset.AddOrUpdateTable(salesTable);
             dataset.AddOrUpdateTable(productsTable);
 
             dataset.Relationships.Add(new PBIRelationship("MyRelationship", salesTable.GetColumnByName("ProductKey"), productsTable.GetColumnByName("ProductKey")));
+
+            var x = productsTable.GetSequenceNumbers();
 
             Console.Write("Publishing to PowerBI Service ... ");
             dataset.PublishToPowerBI();
