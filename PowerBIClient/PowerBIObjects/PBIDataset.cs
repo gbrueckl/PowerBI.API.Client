@@ -39,6 +39,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         [JsonProperty(PropertyName = "datasources", NullValueHandling = NullValueHandling.Ignore)]
         public new List<PBIDatasource> Datasources { get => null; set { } }
 
+        [JsonIgnore]
+        public List<PBIGatewayDatasource> GatewayDatasources { get; set; }
+
         [JsonProperty(PropertyName = "addRowsAPIEnabled", NullValueHandling = NullValueHandling.Ignore)]
         public bool AddRowsAPIEnabled;
 
@@ -193,6 +196,19 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
 
             Datasources = objList.Items;
+        }
+
+        public void LoadGatewayDatasourcesFromPowerBI()
+        {
+            PBIObjectList<PBIGatewayDatasource> objList = JsonConvert.DeserializeObject<PBIObjectList<PBIGatewayDatasource>>(ParentPowerBIAPI.SendGETRequest(ApiURL + "/Default.GetBoundGatewayDataSources").ResponseToString());
+
+            foreach (var item in objList.Items)
+            {
+                item.ParentGroup = this.ParentGroup;
+                item.ParentObject = this;
+            }
+
+            GatewayDatasources = objList.Items;
         }
 
         public void DeleteFromPowerBI(PBIAPIClient powerBiAPI)

@@ -67,6 +67,7 @@
     <Compile Include="Enumerators.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="PowerBIObjects\GenericObjects\IPBIObject.cs" />
+    <Compile Include="PowerBIObjects\PBIGatewayDatasource.cs" />
     <Compile Include="PowerBIObjects\PBIDatasource.cs" />
     <Compile Include="PowerBIObjects\PBIGroup.cs" />
     <Compile Include="PBIAPIClient.cs" />

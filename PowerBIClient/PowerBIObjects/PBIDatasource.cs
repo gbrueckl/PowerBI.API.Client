@@ -47,7 +47,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 if (ParentGroup == null)
                     return string.Format("/v1.0/myorg/datasources/{0}", Name);
                 else
-                    return string.Format("/v1.0/myorg/groups/0}/dashboards/datasources/{1}", ParentGroup.Id, Name);
+                    return string.Format("/v1.0/myorg/groups/{0}/datasources/{1}", ParentGroup.Id, Name);
             }
         }
         [JsonIgnore]
