@@ -18,6 +18,8 @@ namespace gbrueckl.PowerBI.API
         Rows
     }
 
+    // Most enumerators were extracted from here: https://powerbi.microsoft.com/en-us/blog/newdatasets/
+
     public enum PBIDataType
     {
         Int64,
@@ -52,8 +54,19 @@ namespace gbrueckl.PowerBI.API
 
     public enum PBIDataCategory
     {
-        Category1,
-        Category2
+        Address,
+        City,
+        Continent,
+        Country,
+        Image,
+        ImageUrl,
+        Latitude,
+        Longitude,
+        Organization,
+        Place,
+        PostalCode,
+        StateOrProvince,
+        WebUrl
     }
 
     public enum PBISummarizeBy
@@ -62,6 +75,8 @@ namespace gbrueckl.PowerBI.API
         Min,
         Max,
         Count,
-        None
+        None,
+        Average,
+        DistinctCount
     }
 }

@@ -16,11 +16,10 @@ namespace SampleApplication
         static void Main(string[] args)
         {
             // AppID: the ID of the Azure AD Application
-            string ApplicationID = GetConfigValue("PBI_ApplicationID");
-            //string ApplicationID = "fc3a8d8d-1234-5678-a5a1-1a5adb256d7c";
+            string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
 
             PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
-
+            
             string datasetName = "MyPushDataset";
             string tableNameFacts = "MySalesTable";
             string tableNameProducts = "MyProductTable";
@@ -31,12 +30,11 @@ namespace SampleApplication
             dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
 
             PBITable salesTable = new PBITable(tableNameFacts); // create a PBI table manually
-            salesTable.Columns.Add(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true });
-            salesTable.Columns.Add(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" });
+            salesTable.Columns.Add(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true }); // hiding a column
+            salesTable.Columns.Add(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" }); // setting the Formatstring
             salesTable.Columns.Add(new PBIColumn("Amount_BASE", PBIDataType.Double) { FormatString = "$ #,##0.00", IsHidden = true });
 
-            // add Measures to the table
-            salesTable.Measures.Add(new PBIMeasure("Sales Amount", "SUM('{0}'[{1}])", tableNameFacts, "Amount_BASE"));
+            salesTable.Measures.Add(new PBIMeasure("Sales Amount", "SUM('{0}'[{1}])", tableNameFacts, "Amount_BASE")); // adding a measure
 
             // create a regular DataTable - but could also be derived from a SQL Database!
             DataTable dataTable = new DataTable(tableNameProducts);
@@ -61,13 +59,11 @@ namespace SampleApplication
 
             dataset.Relationships.Add(new PBIRelationship("MyRelationship", salesTable.GetColumnByName("ProductKey"), productsTable.GetColumnByName("ProductKey")));
 
-            var x = productsTable.GetSequenceNumbers();
-
             Console.Write("Publishing to PowerBI Service ... ");
             dataset.PublishToPowerBI();
             Console.WriteLine("Done!");
 
-            //salesTable.DeleteRowsFromPowerBI();
+            salesTable.DeleteRowsFromPowerBI();
             PBIRow row = salesTable.GetSampleRow();
             row.SetValue("ProductKey", 1);
             row.SetValue("SalesDate", DateTime.Now);
@@ -84,9 +80,25 @@ namespace SampleApplication
             Console.ReadLine();
         }
 
-        private static string GetConfigValue(string key)
+        private static void Sample_DataTable()
         {
-            return ConfigurationManager.AppSettings[key];
+            // AppID: the ID of the Azure AD Application
+            string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
+
+            PBIAPIClient powerBIClient = new PBIAPIClient(ApplicationID);
+
+            PBIDataset dataset = new PBIDataset("MyPushDataset");
+            dataset.PBIDefaultMode = PBIDefaultMode.Push;
+            dataset.ParentPowerBIAPI = powerBIClient;
+            dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
+
+            // create a regular DataTable - but could also be derived from a SQL Database!
+            DataTable dataTable = new DataTable();
+            /* populate the dataTable */
+            // create a PBI table from a regular DataTable object
+            PBITable productsTable = new PBITable(dataTable);
+            // publish the table and push the rows from the dataTable to the PowerBI table
+            productsTable.PublishToPowerBI(true);
         }
     }
 }

@@ -107,7 +107,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         {
             return _columns.Single<PBIColumn>(x => x.Name == columnName);
         }
-        public void PublishToPowerBI(PBIAPIClient powerBiAPI = null)
+        public void PublishToPowerBI(PBIAPIClient powerBiAPI = null, bool pushRows = false)
         {
             if (ParentDataset == null)
                 throw new Exception("Cannot Publish Table to PowerBI as it is not linked to a DataSet in PowerBI!");
@@ -124,6 +124,16 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             {
                 string result = response.ResponseToString();
             }
+
+            if(pushRows)
+            {
+                PushRowsToPowerBI(DataRows, powerBiAPI);
+            }
+        }
+
+        public void PublishToPowerBI(bool pushRows = false)
+        {
+            PublishToPowerBI(null, pushRows);
         }
 
         public PBIRow GetSampleRow()
@@ -181,10 +191,21 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             PushRowsToPowerBI(rows, powerBiAPI);
         }
 
-        public void PushRowsToPowerBI(PBIRows rows = null, PBIAPIClient powerBiAPI = null)
+        public void PushRowsToPowerBI(PBIRows rows, PBIAPIClient powerBiAPI = null)
+        {
+            if (DataRows == null)
+                DataRows = new List<PBIRow>();
+
+            if (rows != null)
+                DataRows.AddRange(rows.Rows);
+
+            PushRowsToPowerBI(JsonConvert.SerializeObject(DataRows), powerBiAPI);
+        }
+
+        public void PushRowsToPowerBI(List<PBIRow> rows = null, PBIAPIClient powerBiAPI = null)
         {
             if (rows != null)
-                DataRows = rows.Rows;
+                DataRows = rows;
 
             PushRowsToPowerBI(JsonConvert.SerializeObject(DataRows), powerBiAPI);
         }

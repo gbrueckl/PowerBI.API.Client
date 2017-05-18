@@ -76,9 +76,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             get
             {
                 if (ParentGroup == null)
-                    return string.Format("/v1.0/myorg/dashboards{0}", Id);
+                    return string.Format("/v1.0/myorg/dashboards/{0}", Id);
                 else
-                    return string.Format("v1.0/myorg/groups/0}/dashboards/{1}", ParentGroup.Id, Id);
+                    return string.Format("v1.0/myorg/groups/{0}/dashboards/{1}", ParentGroup.Id, Id);
             }
         }
         [JsonIgnore]
