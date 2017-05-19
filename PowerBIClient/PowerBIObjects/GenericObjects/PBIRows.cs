@@ -14,13 +14,13 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
     {
         #region Private Properties for Serialization
         [JsonProperty(PropertyName = "rows", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PBIRow> Rows { get => Items; set => Items = value; }
+        public List<PBIRow> Rows { get { return Items; } set { Items = value; } }
 
         [JsonIgnore]
         public PBITable ParentTable { get; set; }
 
         [JsonIgnore]
-        public string JSON { get => JsonConvert.SerializeObject(this); }
+        public string JSON { get { return JsonConvert.SerializeObject(this); } }
         #endregion
     }
 }

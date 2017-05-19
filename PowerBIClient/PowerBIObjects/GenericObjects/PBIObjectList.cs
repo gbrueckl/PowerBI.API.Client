@@ -15,7 +15,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         private string ODataContext;
 
-        public T this[int index] { get => ((IList<T>)Items)[index]; set => ((IList<T>)Items)[index] = value; }
+        public T this[int index] { get { return ((IList<T>)Items)[index]; } set { ((IList<T>)Items)[index] = value; } }
 
         [JsonProperty(PropertyName = "value", NullValueHandling = NullValueHandling.Ignore)]
         public List<T> Items { get; set; }

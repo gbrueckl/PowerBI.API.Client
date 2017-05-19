@@ -46,7 +46,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         public PBIDataset ParentDataset
         {
-            get => (PBIDataset)ParentObject;
+            get { return (PBIDataset)ParentObject; }
             set
             {
                 ParentObject = value;

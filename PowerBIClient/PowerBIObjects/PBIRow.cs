@@ -23,7 +23,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         #endregion
         #region Public Properties
         [JsonProperty(PropertyName = "id", NullValueHandling = NullValueHandling.Ignore)]
-        public new string Id { get => null; set { } }
+        public new string Id { get { return null; } set { } }
 
         [JsonExtensionData]
         private Dictionary<string, object> Values { get; set; }
@@ -31,7 +31,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         public PBITable ParentTable { get; set; }
 
         [JsonIgnore]
-        public string JSON { get => JsonConvert.SerializeObject(this); }
+        public string JSON { get { return JsonConvert.SerializeObject(this); } }
         #endregion
 
         #region Public Functions

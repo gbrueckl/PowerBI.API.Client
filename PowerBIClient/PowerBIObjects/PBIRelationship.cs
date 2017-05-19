@@ -48,7 +48,8 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         #region Public Properties
         public string Name
         {
-            get => _name; set => _name = value;
+            get { return _name; }
+            set { _name = value; }
         }
 
         public PBIColumn FromColumn
@@ -86,7 +87,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         public PBIDataset ParentDataset
         {
-            get => _parentDataset;
+            get { return _parentDataset; }
             set
             {
                 _parentDataset = value;

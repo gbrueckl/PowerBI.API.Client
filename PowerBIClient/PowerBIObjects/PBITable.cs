@@ -66,18 +66,18 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             set { _columns = value; }
         }
         [JsonProperty(PropertyName = "rows", NullValueHandling = NullValueHandling.Ignore)]
-        public new List<PBIRow> Rows { get => null; set { } }
+        public new List<PBIRow> Rows { get { return null; } set { } }
         [JsonIgnore]
-        public List<PBIMeasure> Measures { get => _measures; set => _measures = value; }
+        public List<PBIMeasure> Measures { get { return _measures; } set { _measures = value; } }
         [JsonIgnore]
         public List<PBIRow> DataRows { get; set; }
 
         [JsonIgnore]
-        public string Id { get => null; set { } }
+        public string Id { get { return null; } set { } }
         [JsonIgnore]
         public PBIDataset ParentDataset
         {
-            get => (PBIDataset)ParentObject;
+            get { return (PBIDataset)ParentObject; }
             set
             {
                 ParentObject = value;

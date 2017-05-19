@@ -37,7 +37,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         public List<PBIRelationship> Relationships { get; set; }
 
         [JsonProperty(PropertyName = "datasources", NullValueHandling = NullValueHandling.Ignore)]
-        public new List<PBIDatasource> Datasources { get => null; set { } }
+        public new List<PBIDatasource> Datasources { get { return null; } set { } }
 
         [JsonIgnore]
         public List<PBIGatewayDatasource> GatewayDatasources { get; set; }
@@ -46,7 +46,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         public bool AddRowsAPIEnabled;
 
         [JsonProperty(PropertyName = "webUrl", NullValueHandling = NullValueHandling.Ignore)]
-        public new string WebUrl { get => null; set { } }
+        public new string WebUrl { get { return null; } set { } }
 
         #endregion
 

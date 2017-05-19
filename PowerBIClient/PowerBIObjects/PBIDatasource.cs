@@ -36,7 +36,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         public PBIDataset ParentDataset { get; set; }
 
         [JsonIgnore]
-        public string Id { get => null; set { } }
+        public string Id { get { return null; } set { } }
         [JsonIgnore]
         public PBIGroup ParentGroup { get; set; }
         [JsonIgnore]

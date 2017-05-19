@@ -204,16 +204,19 @@ namespace gbrueckl.PowerBI.API
                 return objList.Items;
             }
         }
-
-        [JsonIgnore]
-        public string Id { get => null; set { } }
-        [JsonIgnore]
-        public string ApiURL { get => "/v1.0/myorg"; }
-        [JsonIgnore]
-        public PBIGroup ParentGroup { get => null;}
-        [JsonIgnore]
-        public IPBIObject ParentObject { get => null; }
         #endregion
+
+        #region Interface IPBIObject
+        [JsonIgnore]
+        public string Id { get { return null; } set { } }
+        [JsonIgnore]
+        public string ApiURL { get { return "/v1.0/myorg"; } }
+        [JsonIgnore]
+        public PBIGroup ParentGroup { get { return null; } }
+        [JsonIgnore]
+        public IPBIObject ParentObject { get { return null; } }
+        #endregion
+
 
         #region Public Functions
         public PBIDataset GetDatasetByID(string id)
