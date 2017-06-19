@@ -1,4 +1,4 @@
-﻿using Microsoft.PowerBI.Api.V1.Models;
+﻿using Microsoft.PowerBI.Api.V2.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

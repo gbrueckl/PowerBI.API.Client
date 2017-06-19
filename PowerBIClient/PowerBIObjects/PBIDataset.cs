@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json.Linq;
-using Microsoft.PowerBI.Api.V1.Models;
+using Microsoft.PowerBI.Api.V2.Models;
 using Newtonsoft.Json;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects

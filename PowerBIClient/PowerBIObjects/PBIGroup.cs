@@ -11,7 +11,7 @@ using System.Web.Script.Serialization;
 using gbrueckl.PowerBI.API.PowerBIObjects;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
-using Microsoft.PowerBI.Api.V1.Models;
+using Microsoft.PowerBI.Api.V2.Models;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects
 {
