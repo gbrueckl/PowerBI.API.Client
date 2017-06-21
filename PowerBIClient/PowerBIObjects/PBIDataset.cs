@@ -42,9 +42,6 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         [JsonIgnore]
         public List<PBIGatewayDatasource> GatewayDatasources { get; set; }
 
-        [JsonProperty(PropertyName = "addRowsAPIEnabled", NullValueHandling = NullValueHandling.Ignore)]
-        public bool AddRowsAPIEnabled;
-
         [JsonProperty(PropertyName = "webUrl", NullValueHandling = NullValueHandling.Ignore)]
         public new string WebUrl { get { return null; } set { } }
 
@@ -313,7 +310,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
-        public void RefreshData(PBIAPIClient powerBiAPI = null)
+        public void Refresh(PBIAPIClient powerBiAPI = null)
         {
             if (powerBiAPI == null)
             {
@@ -322,7 +319,22 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 else
                     powerBiAPI = ParentPowerBIAPI;
             }
-            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL, PBIAPI.Refresh, null))
+            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL +  "/refresh", null))
+            {
+                string result = response.ResponseToString();
+            }
+        }
+
+        public void TakeOver(PBIAPIClient powerBiAPI = null)
+        {
+            if (powerBiAPI == null)
+            {
+                if (ParentPowerBIAPI == null)
+                    throw new Exception("No PowerBI API Object was supplied!");
+                else
+                    powerBiAPI = ParentPowerBIAPI;
+            }
+            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "/takeover", null))
             {
                 string result = response.ResponseToString();
             }
