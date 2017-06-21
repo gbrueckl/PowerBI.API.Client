@@ -285,31 +285,46 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             PBIDataset temp;
             try
             {
-                if(string.IsNullOrEmpty(this.Id))
+                if (string.IsNullOrEmpty(this.Id))
                     if (ParentGroup == null)
                         temp = powerBiAPI.GetDatasetByName(this.Name);
                     else
                         temp = ParentGroup.GetDatasetByName(this.Name);
                 else
                     if (ParentGroup == null)
-                        temp = powerBiAPI.GetDatasetByID(this.Id);
-                    else
-                        temp = ParentGroup.GetDatasetByID(this.Id);
+                    temp = powerBiAPI.GetDatasetByID(this.Id);
+                else
+                    temp = ParentGroup.GetDatasetByID(this.Id);
 
                 if (temp != null)
                 {
                     this.Id = temp.Id;
                     this.AddRowsAPIEnabled = temp.AddRowsAPIEnabled;
 
-                    foreach(PBITable table in temp.Tables)
+                    foreach (PBITable table in temp.Tables)
                     {
                         this.AddOrUpdateTable(table);
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
+            }
+        }
+
+        public void RefreshData(PBIAPIClient powerBiAPI = null)
+        {
+            if (powerBiAPI == null)
+            {
+                if (ParentPowerBIAPI == null)
+                    throw new Exception("No PowerBI API Object was supplied!");
+                else
+                    powerBiAPI = ParentPowerBIAPI;
+            }
+            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL, PBIAPI.Refresh, null))
+            {
+                string result = response.ResponseToString();
             }
         }
 
