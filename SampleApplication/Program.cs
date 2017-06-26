@@ -15,11 +15,23 @@ namespace SampleApplication
     {
         static void Main(string[] args)
         {
+            //Sample_Create_Model();
+
+            //Sample_DataTable();
+
+            Sample_Dataset_Refresh();
+
+            Console.Write("Press <ENTER> to quit. ");
+            Console.ReadLine();
+        }
+
+        private static void Sample_Create_Model()
+        {
             // AppID: the ID of the Azure AD Application
             string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
 
             PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
-            
+
             string datasetName = "MyPushDataset";
             string tableNameFacts = "MySalesTable";
             string tableNameProducts = "MyProductTable";
@@ -75,9 +87,6 @@ namespace SampleApplication
             salesTable.PushRowToPowerBI(new PBIRow(new Dictionary<string, object> { { "ProductKey", 2 }, { "SalesDate", DateTime.Now }, { "Amount_BASE", 150.70 } }));
 
             productsTable.PushRowsToPowerBI();
-
-            Console.Write("Press <ENTER> to quit. ");
-            Console.ReadLine();
         }
 
         private static void Sample_DataTable()
@@ -99,6 +108,17 @@ namespace SampleApplication
             PBITable productsTable = new PBITable(dataTable);
             // publish the table and push the rows from the dataTable to the PowerBI table
             productsTable.PublishToPowerBI(true);
+        }
+
+        private static void Sample_Dataset_Refresh()
+        {
+            // AppID: the ID of the Azure AD Application
+            string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
+
+            PBIAPIClient powerBIClient = new PBIAPIClient(ApplicationID);
+
+            PBIDataset powerBIDataset = powerBIClient.GetDatasetByName("TestRefresh");
+            powerBIDataset.Refresh();
         }
     }
 }

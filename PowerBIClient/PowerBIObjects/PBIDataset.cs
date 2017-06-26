@@ -319,7 +319,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 else
                     powerBiAPI = ParentPowerBIAPI;
             }
-            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL +  "/refresh", null))
+            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL +  "/refreshes", null))
             {
                 string result = response.ResponseToString();
             }
