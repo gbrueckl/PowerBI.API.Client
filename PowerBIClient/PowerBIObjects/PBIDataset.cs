@@ -32,6 +32,8 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         [JsonProperty(PropertyName = "tables", NullValueHandling = NullValueHandling.Ignore)]
         private List<PBITable> _tables;
 
+        [JsonIgnore]
+        private List<PBIRefresh> _refreshes;
 
         [JsonProperty(PropertyName = "relationships", NullValueHandling = NullValueHandling.Ignore)]
         public List<PBIRelationship> Relationships { get; set; }
@@ -107,6 +109,27 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                     tbl.ParentDataset = this;
                     tbl.ParentObject = this;
                 }
+            }
+        }
+
+        [JsonIgnore]
+        public IList<PBIRefresh> Refreshes
+        {
+            get
+            {
+                if (_refreshes == null)
+                {
+                    if (Id != null)
+                    {
+                        LoadRefreshesFromPowerBI();
+                    }
+                    else
+                    {
+                        _refreshes = new List<PBIRefresh>();
+                    }
+                }
+
+                return _refreshes;
             }
         }
 
@@ -310,6 +333,12 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        public void LoadRefreshesFromPowerBI()
+        {
+            PBIObjectList<PBIRefresh> objList = JsonConvert.DeserializeObject<PBIObjectList<PBIRefresh>>(ParentPowerBIAPI.SendGETRequest(ApiURL, PBIAPI.Refreshes).ResponseToString());
+            this._refreshes = objList.Items;
+        }
+
         public void Refresh(PBIAPIClient powerBiAPI = null)
         {
             if (powerBiAPI == null)
@@ -319,7 +348,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 else
                     powerBiAPI = ParentPowerBIAPI;
             }
-            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL +  "/refreshes", null))
+            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL, PBIAPI.Refreshes, null))
             {
                 string result = response.ResponseToString();
             }
