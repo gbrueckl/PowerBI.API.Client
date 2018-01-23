@@ -15,7 +15,8 @@ namespace gbrueckl.PowerBI.API
         Tiles,
         Tables,
         Datasources,
-        Rows
+        Rows,
+        Refreshes
     }
 
     // Most enumerators were extracted from here: https://powerbi.microsoft.com/en-us/blog/newdatasets/
