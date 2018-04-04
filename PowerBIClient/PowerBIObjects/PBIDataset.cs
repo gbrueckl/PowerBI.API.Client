@@ -32,6 +32,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         [JsonProperty(PropertyName = "tables", NullValueHandling = NullValueHandling.Ignore)]
         private List<PBITable> _tables;
+
+        [JsonIgnore]
+        private List<PBIRefresh> _refreshes;
         #endregion
 
         #region Public Properties
@@ -110,6 +113,27 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         }
 
         [JsonIgnore]
+        public IList<PBIRefresh> Refreshes
+        {
+            get
+            {
+                if (_refreshes == null)
+                {
+                    if (Id != null)
+                    {
+                        LoadRefreshesFromPowerBI();
+                    }
+                    else
+                    {
+                        _refreshes = new List<PBIRefresh>();
+                    }
+                }
+
+                return _refreshes;
+            }
+        }
+
+        [JsonIgnore]
         public PBIAPIClient ParentPowerBIAPI { get; set; }
         [JsonIgnore]
         public PBIGroup ParentGroup { get; set; }
@@ -157,6 +181,12 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
 
             _tables = objList.Items;
+        }
+
+        public void LoadRefreshesFromPowerBI()
+        {
+            PBIObjectList<PBIRefresh> objList = JsonConvert.DeserializeObject<PBIObjectList<PBIRefresh>>(ParentPowerBIAPI.SendGETRequest(ApiURL, PBIAPI.Refreshes).ResponseToString());
+            this._refreshes = objList.Items;
         }
 
         public void AddOrUpdateTable(PBITable newTable)
