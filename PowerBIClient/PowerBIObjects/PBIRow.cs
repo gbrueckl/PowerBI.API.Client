@@ -31,7 +31,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         public PBITable ParentTable { get; set; }
 
         [JsonIgnore]
-        public string JSON { get { return JsonConvert.SerializeObject(this); } }
+        public string JSON { get { return PBIJsonHelper.SerializeObject(this); } }
         #endregion
 
         #region Public Functions

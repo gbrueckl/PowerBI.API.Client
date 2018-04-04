@@ -17,6 +17,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         [JsonIgnore]
         IPBIObject ParentObject { get; }
 
+        [JsonIgnore]
+        PBIAPIClient ParentPowerBIAPI { get; set; }
+
         string Id { get; set; }
     }
 }

@@ -18,9 +18,10 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
     {
         #region Constructors
         [JsonConstructor]
-        public PBIDataset(string name)
+        public PBIDataset(string name, PBIDefaultMode defaultMode = PBIDefaultMode.Push)
         {
             Name = name;
+            PBIDefaultMode = defaultMode;
 
             Relationships = new List<PBIRelationship>();
         }
@@ -31,23 +32,21 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         [JsonProperty(PropertyName = "tables", NullValueHandling = NullValueHandling.Ignore)]
         private List<PBITable> _tables;
+        #endregion
 
-
+        #region Public Properties
         [JsonProperty(PropertyName = "relationships", NullValueHandling = NullValueHandling.Ignore)]
         public List<PBIRelationship> Relationships { get; set; }
 
         [JsonProperty(PropertyName = "datasources", NullValueHandling = NullValueHandling.Ignore)]
         public new List<PBIDatasource> Datasources { get { return null; } set { } }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public List<PBIGatewayDatasource> GatewayDatasources { get; set; }
 
         [JsonProperty(PropertyName = "webUrl", NullValueHandling = NullValueHandling.Ignore)]
         public new string WebUrl { get { return null; } set { } }
 
-        #endregion
-
-        #region Public Properties
         [JsonIgnore]
         public PBIDefaultMode PBIDefaultMode
         {
@@ -58,7 +57,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
                 return (PBIDefaultMode)Enum.Parse(typeof(PBIDefaultMode), base.DefaultMode, true);
             }
-            set
+            private set
             {
                 base.DefaultMode = value.ToString();
             }
@@ -119,10 +118,14 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         {
             get
             {
+                string tempId = Id;
+                if (!string.IsNullOrEmpty(Id))
+                    tempId = "/" + Id;
+
                 if (ParentGroup == null)
-                    return string.Format("/v1.0/myorg/datasets/{0}", Id);
+                    return string.Format("/v1.0/myorg/datasets{0}", tempId);
                 else
-                    return string.Format("/v1.0/myorg/groups/{0}/datasets/{1}", ParentGroup.Id, Id);
+                    return string.Format("/v1.0/myorg/groups/{0}/datasets{1}", ParentGroup.Id, tempId);
             }
         }
         [JsonIgnore]
@@ -234,7 +237,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
             if (string.IsNullOrEmpty(Id)) // Dataset was not loaded from PowerBI Service
             {
-                using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "?defaultRetentionPolicy=" + defaultRetentionPolicy.ToString(), JsonConvert.SerializeObject(this)))
+                using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "?defaultRetentionPolicy=" + defaultRetentionPolicy.ToString(), PBIJsonHelper.SerializeObject(this)))
                 {
                     using (StreamReader streamReader = new StreamReader(response.GetResponseStream(), true))
                     {
@@ -346,6 +349,32 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             {
                 table.DeleteRowsFromPowerBI(powerBiAPI);
             }
+        }
+        #endregion
+
+        #region ShouldSerialize-Functions
+        public bool ShouldSerialize_relationships()
+        {
+            if (PBIDefaultMode == PBIDefaultMode.Streaming)
+            {
+                if (Relationships != null || Relationships.Count > 0)
+                    Console.WriteLine("Relationships are not supported in Streaming-Mode!");
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ShouldSerialize_datasources()
+        {
+            if (PBIDefaultMode == PBIDefaultMode.Streaming)
+            {
+                if (Datasources != null || Datasources.Count > 0)
+                    Console.WriteLine("Datasources are not supported in Streaming-Mode!");
+                return false;
+            }
+                
+            return true;
         }
         #endregion 
     }

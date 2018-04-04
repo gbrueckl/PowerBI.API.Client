@@ -88,5 +88,67 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         [JsonIgnore]
         public PBITable ParentTable { get; set; }
         #endregion
+
+        #region ShouldSerialize-Functions
+        public bool ShouldSerialize_formatString()
+        {
+            if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
+            {
+                if (!string.IsNullOrEmpty(FormatString))
+                    Console.WriteLine("FormatStrings are not supported in Streaming-Mode (column [{0}])!", Name);
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ShouldSerialize_sortByColumn()
+        {
+            if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
+            {
+                if (!string.IsNullOrEmpty(SortByColumn))
+                    Console.WriteLine("SortByColumns are not supported in Streaming-Mode (column [{0}])!", Name);
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ShouldSerialize_isHidden()
+        {
+            if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
+            {
+                if (IsHidden.HasValue)
+                    Console.WriteLine("IsHidden is not supported in Streaming-Mode (column [{0}])!", Name);
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ShouldSerialize_dataCategory()
+        {
+            if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
+            {
+                if (DataCategory.HasValue)
+                    Console.WriteLine("DataCategories are not supported in Streaming-Mode (column [{0}])!", Name);
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ShouldSerialize_summarizeBy()
+        {
+            if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
+            {
+                if (PBISummarizeBy.HasValue)
+                    Console.WriteLine("SummarizeBy is not supported in Streaming-Mode (column [{0}])!", Name);
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
     }
 }

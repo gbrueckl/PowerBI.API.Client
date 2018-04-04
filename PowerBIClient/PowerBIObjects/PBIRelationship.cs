@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -7,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects
 {
-    [DataContract]
     public class PBIRelationship
     {
         private PBIDataset _parentDataset;
         #region Constructors
+        [JsonConstructor]
         public PBIRelationship(string name, PBIColumn fromColumn, PBIColumn toColumn, PBICrossFilteringBehavior crossFiltering = PBICrossFilteringBehavior.Automatic)
         {
-            _name = name;
+            Name = name;
             _fromTable = fromColumn.ParentTable.Name;
             _fromColumn = fromColumn.Name;
 
@@ -25,33 +26,28 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         }
         #endregion
         #region Private Properties for Serialization
-        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = false)]
-        private string _name;
-
-        [DataMember(Name = "fromTable", IsRequired = true, EmitDefaultValue = false)]
+        [JsonProperty(PropertyName = "fromTable", Required = Required.Always)]
         private string _fromTable;
 
-        [DataMember(Name = "fromColumn", IsRequired = true, EmitDefaultValue = false)]
+        [JsonProperty(PropertyName = "fromColumn", Required = Required.Always)]
         private string _fromColumn;
 
-        [DataMember(Name = "toTable", IsRequired = true, EmitDefaultValue = false)]
+        [JsonProperty(PropertyName = "toTable", Required = Required.Always)]
         private string _toTable;
 
-        [DataMember(Name = "toColumn", IsRequired = true, EmitDefaultValue = false)]
+        [JsonProperty(PropertyName = "toColumn", Required = Required.Always)]
         private string _toColumn;
 
-        [DataMember(Name = "crossFilteringBehavior", IsRequired = true, EmitDefaultValue = false)]
+        [JsonProperty(PropertyName = "crossFilteringBehavior", Required = Required.Always)]
         private string _crossFilteringBehavior;
 
         #endregion
 
         #region Public Properties
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        [JsonProperty(PropertyName = "name", Required = Required.Always)]
+        public string Name { get; set; }
 
+        [JsonIgnore]
         public PBIColumn FromColumn
         {
             set
@@ -61,6 +57,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        [JsonIgnore]
         public PBIColumn ToColumn
         {
             set
@@ -70,6 +67,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        [JsonIgnore]
         public PBICrossFilteringBehavior CrossFilteringBehavior
         {
             get
@@ -85,6 +83,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        [JsonIgnore]
         public PBIDataset ParentDataset
         {
             get { return _parentDataset; }

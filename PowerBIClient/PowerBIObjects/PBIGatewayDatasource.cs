@@ -32,6 +32,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         #region Public Properties
         [JsonIgnore]
+        public PBIAPIClient ParentPowerBIAPI { get; set; }
+
+        [JsonIgnore]
         public PBIGroup ParentGroup { get; set; }
         [JsonIgnore]
         public string ApiURL

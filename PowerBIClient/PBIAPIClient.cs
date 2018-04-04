@@ -8,11 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using gbrueckl.PowerBI.API.PowerBIObjects;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.PowerBI.Api.V2;
 using Newtonsoft.Json;
 
 namespace gbrueckl.PowerBI.API
 {
-    public class PBIAPIClient : IPBIObject
+    public class PBIAPIClient : PBIGroup, IPBIObject
     {
         //Replace redirectUri with the uri you used when you registered your app
         public string RedirectUri = "https://login.live.com/oauth20_desktop.srf";
@@ -20,7 +21,8 @@ namespace gbrueckl.PowerBI.API
         //Power BI resource uri
         public const string ResourceUri = "https://analysis.windows.net/powerbi/api";
         //OAuth2 authority
-        public const string AuthorityUri = "https://login.windows.net/common/oauth2/authorize";
+        //public const string AuthorityUri = "https://login.windows.net/common/oauth2/authorize";
+        public const string AuthorityUri = "https://login.microsoftonline.com/common/oauth2/authorize";
 
         //Base API URL
         private const string PBIApiUrl = "https://api.powerbi.com";
@@ -34,13 +36,21 @@ namespace gbrueckl.PowerBI.API
         CultureInfo _culture;
 
         #region Constructors
+
+        private void Initialize()
+        {
+            base.ParentPowerBIAPI = this;
+            base.ApiURL = "/v1.0/myorg";
+
+            _style = NumberStyles.Number;
+            _culture = CultureInfo.CreateSpecificCulture("en-US");
+        }
         public PBIAPIClient(string clientID)
         {
             _clientID = clientID;
 
-            _style = NumberStyles.Number;
-            _culture = CultureInfo.CreateSpecificCulture("en-US");
-
+            Initialize();
+            
             Connect();
         }
 
@@ -49,16 +59,14 @@ namespace gbrueckl.PowerBI.API
             _clientID = clientID;
             _accessToken = accessToken;
 
-            _style = NumberStyles.Number;
-            _culture = CultureInfo.CreateSpecificCulture("en-US");
+            Initialize();
         }
 
         public PBIAPIClient(string clientID, string userName, string password)
         {
             _clientID = clientID;
 
-            _style = NumberStyles.Number;
-            _culture = CultureInfo.CreateSpecificCulture("en-US");
+            Initialize();
 
             Connect(userName, password);
         }
@@ -94,7 +102,7 @@ namespace gbrueckl.PowerBI.API
             {
                 TokenCache TC = new TokenCache();
                 _authenticationContext = new AuthenticationContext(AuthorityUri, TC);
-                var asyncCall = _authenticationContext.AcquireTokenAsync(ResourceUri, _clientID, new Uri(RedirectUri), new PlatformParameters(PromptBehavior.Auto));
+                var asyncCall = _authenticationContext.AcquireTokenAsync(ResourceUri, _clientID, new Uri(RedirectUri), new PlatformParameters(PromptBehavior.Always));
                 _tenantId = asyncCall.Result.TenantId;
                 _accessToken = asyncCall.Result.AccessToken;
             }
@@ -135,59 +143,6 @@ namespace gbrueckl.PowerBI.API
         #endregion 
 
         #region Public Properties
-        public List<PBIDataset> Datasets
-        {
-            get
-            {
-                PBIObjectList<PBIDataset> objList = JsonConvert.DeserializeObject<PBIObjectList<PBIDataset>>(SendGETRequest(ApiURL, PBIAPI.DataSets).ResponseToString());
-
-                foreach (var item in objList.Items)
-                {
-                    item.ParentPowerBIAPI = this;
-                    item.ParentGroup = null;
-                    item.ParentObject = this;
-                }
-
-                return objList.Items;
-            }
-        }
-
-
-
-        public List<PBIDashboard> Dashboards
-        {
-            get
-            {
-                PBIObjectList<PBIDashboard> objList = JsonConvert.DeserializeObject<PBIObjectList<PBIDashboard>>(SendGETRequest(ApiURL, PBIAPI.Dashboards).ResponseToString());
-
-                foreach (var item in objList.Items)
-                {
-                    item.ParentPowerBIAPI = this;
-                    item.ParentGroup = null;
-                    item.ParentObject = this;
-                }
-
-                return objList.Items;
-            }
-        }
-
-        public List<PBIReport> Reports
-        {
-            get
-            {
-                PBIObjectList<PBIReport> objList = JsonConvert.DeserializeObject<PBIObjectList<PBIReport>>(SendGETRequest(ApiURL, PBIAPI.Reports).ResponseToString());
-
-                foreach (var item in objList.Items)
-                {
-                    item.ParentPowerBIAPI = this;
-                    item.ParentGroup = null;
-                    item.ParentObject = this;
-                }
-
-                return objList.Items;
-            }
-        }
-
         public List<PBIGroup> Groups
         {
             get
@@ -206,68 +161,34 @@ namespace gbrueckl.PowerBI.API
         }
         #endregion
 
-        #region Interface IPBIObject
+
         [JsonIgnore]
-        public string Id { get { return null; } set { } }
-        [JsonIgnore]
-        public string ApiURL { get { return "/v1.0/myorg"; } }
-        [JsonIgnore]
-        public PBIGroup ParentGroup { get { return null; } }
-        [JsonIgnore]
-        public IPBIObject ParentObject { get { return null; } }
-        #endregion
+        public Dictionary<string,List<string>> RequestHeaders
+        {
+            get
+            {
+                Dictionary < string,List <string>> headers = new Dictionary<string, List<string>>();
+                List<string> authHeader = new List<string>();
+
+                authHeader.Add(String.Format("Bearer {0}", AccessToken));
+                headers.Add("Authorization", authHeader);
+
+                return headers;
+            }
+        }
 
 
         #region Public Functions
-        public PBIDataset GetDatasetByID(string id)
+        public PBIGroup GetGroupByID(string id)
         {
             try
             {
-                return Datasets.Single(x => string.Equals(x.Id, id, StringComparison.InvariantCultureIgnoreCase));
+                return Groups.Single(x => string.Equals(x.Id, id, StringComparison.InvariantCultureIgnoreCase));
             }
             catch (Exception e)
             {
                 //return null;
-                throw new KeyNotFoundException(string.Format("No Dataset with ID '{0}' could be found in PowerBI!", id), e);
-            }
-        }
-
-        public PBIDataset GetDatasetByName(string name)
-        {
-            try
-            {
-                return Datasets.Single(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
-            }
-            catch (Exception e)
-            {
-                //return null;
-                throw new KeyNotFoundException(string.Format("No Dataset with name '{0}' could be found in PowerBI!", name), e);
-            }
-        }
-
-        public PBIReport GetReportByName(string name)
-        {
-            try
-            {
-                return Reports.Single(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
-            }
-            catch (Exception e)
-            {
-                //return null;
-                throw new KeyNotFoundException(string.Format("No Report with name '{0}' could be found in PowerBI!", name), e);
-            }
-        }
-
-        public PBIDashboard GetDashboardByName(string name)
-        {
-            try
-            {
-                return Dashboards.Single(x => string.Equals(x.DisplayName, name, StringComparison.InvariantCultureIgnoreCase));
-            }
-            catch (Exception e)
-            {
-                //return null;
-                throw new KeyNotFoundException(string.Format("No Dashboard with name '{0}' could be found in PowerBI!", name), e);
+                throw new KeyNotFoundException(string.Format("No Group with ID '{0}' could be found in PowerBI!", id), e);
             }
         }
 
@@ -280,23 +201,9 @@ namespace gbrueckl.PowerBI.API
             catch (Exception e)
             {
                 //return null;
-                throw new KeyNotFoundException(string.Format("No Group/Workspace with name '{0}' could be found in PowerBI!", name), e);
+                throw new KeyNotFoundException(string.Format("No Group with name '{0}' could be found in PowerBI!", name), e);
             }
         }
-
-        public PBIGroup GetGroupById(string id)
-        {
-            try
-            {
-                return Groups.Single(x => string.Equals(x.Id, id, StringComparison.InvariantCultureIgnoreCase));
-            }
-            catch (Exception e)
-            {
-                //return null;
-                throw new KeyNotFoundException(string.Format("No Group/Workspace with ID '{0}' could be found in PowerBI!", id), e);
-            }
-        }
-        #endregion
         public HttpWebResponse SendGenericWebRequest(string url, string method, string body = null)
         {
             HttpWebResponse response = null;
@@ -338,7 +245,7 @@ namespace gbrueckl.PowerBI.API
             }
             return response;
         }
-
+        #endregion
 
         #region Private WebRequest Methods
         private HttpWebResponse SendApIRequest(string api, string method, string body = null)
@@ -373,12 +280,9 @@ namespace gbrueckl.PowerBI.API
                 using (WebResponse webResponse = e.Response)
                 {
                     HttpWebResponse httpResponse = (HttpWebResponse)webResponse;
-                    using (Stream data = webResponse.GetResponseStream())
-                    using (var reader = new StreamReader(data))
-                    {
-                        string text = reader.ReadToEnd();
-                        throw new Exception(text, e);
-                    }
+                    string text = httpResponse.ResponseToString();
+
+                    throw new Exception(text, e);
                 }
             }
             return response;

@@ -14,7 +14,8 @@ namespace gbrueckl.PowerBI.API
     {
         public static string StreamToString(this Stream stream)
         {
-            using (var reader = new StreamReader(stream))
+            
+            using (StreamReader reader = new StreamReader(stream))
             {
                 string text = reader.ReadToEnd();
                 return text;

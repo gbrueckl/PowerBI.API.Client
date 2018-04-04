@@ -9,29 +9,57 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json;
+using Microsoft.PowerBI.Api.V2.Models;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects
 {
     [DataContract]
-    public class PBIReport : IPBIObject
+    public class PBIReport : Report, IPBIObject
     {
+        /*
+        {
+            "id":"123599a9-0d69-4c2a-a42c-1ef98fd5ab9c",
+            "modelId":0,
+            "name":"MyReport",
+            "webUrl":"https://app.powerbi.com/reports/123599a9-0d69-4c2a-a42c-1ef98fd5ab9c",
+            "embedUrl":"https://app.powerbi.com/reportEmbed?reportId=123599a9-0d69-4c2a-a42c-1ef98fd5ab9c",
+            "isOwnedByMe":true,
+            "isOriginalPbixReport":false,
+            "datasetId":"456baf28-3edb-4ec0-af1c-942995dc3e8a"
+        }
+        */
+
         #region Constructors
+
         #endregion
+
         #region Private Properties for Serialization
+
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         private string ODataContext;
 
         [JsonProperty(PropertyName = "id", Required = Required.Always)]
-        public string Id { get; set; }
+        public new string Id { get; set; }
 
         [JsonProperty(PropertyName = "name", Required = Required.Always)]
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
         [JsonProperty(PropertyName = "webUrl", Required = Required.Default)]
-        public string WebURL { get; set; }
+        [JsonIgnoreSerialize]
+        public new string WebUrl { get; private set; }
+        
+        [JsonProperty(PropertyName = "embedUrl", Required = Required.Default)]
+        [JsonIgnoreSerialize]
+        public new string EmbedUrl { get; private set; }
 
-        [JsonProperty(PropertyName = "embedUrl", Required = Required.Always)]
-        public string EmbedURL { get; set; }
+        [JsonProperty(PropertyName = "isOwnedByMe", Required = Required.Default)]
+        [JsonIgnoreSerialize]
+        public bool IsOwnedByMe { get; private set; }
+
+
+        [JsonProperty(PropertyName = "isOriginalPbixReport", Required = Required.Default)]
+        [JsonIgnoreSerialize]
+        public bool IsOriginalPbixReport { get; private set; }
         #endregion
 
         #region Public Properties
@@ -46,15 +74,44 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             get
             {
                 if (ParentGroup == null)
-                    return "v1.0/myorg/reports";
+                    return string.Format("/v1.0/myorg/reports/{0}", Id);
                 else
-                    return string.Format("v1.0/myorg/groups/0}/reports", ParentGroup.Id);
+                    return string.Format("/v1.0/myorg/groups/{0}/reports/{1}", ParentGroup.Id, Id);
             }
         }
         [JsonIgnore]
         public IPBIObject ParentObject { get; set; }
         #endregion
 
+        #region Public Functions
+        public void Rebind(PBIDataset newDataset)
+        {
+            if (ParentPowerBIAPI == null)
+                throw new Exception("No PowerBI API Object was supplied!");
 
+            using (HttpWebResponse response = ParentPowerBIAPI.SendPOSTRequest(ApiURL + "/Rebind", "{\"datasetId\": \"" + newDataset.Id + "\"}"))
+            {
+                string result = response.ResponseToString();
+            }
+        }
+
+        public void Rebind(string newDatasetId)
+        {
+            Rebind(ParentPowerBIAPI.GetDatasetByID(newDatasetId));
+        }
+
+        public void Clone(string newReportName, PBIGroup targetGroup, PBIDataset targetDataset)
+        {
+            string json = JsonConvert.SerializeObject(this);
+            if (ParentPowerBIAPI == null)
+                throw new Exception("No PowerBI API Object was supplied!");
+
+            using (HttpWebResponse response = ParentPowerBIAPI.SendPOSTRequest(ApiURL + "/Clone", "{\"name\": \"" + newReportName + "\", \"targetWorkspaceId\": \"" + targetGroup.Id + "\", \"targetModelId\": \"" + targetDataset.Id + "\"}"))
+            {
+                string result = response.ResponseToString();
+            }
+
+        }
+        #endregion
     }
 }

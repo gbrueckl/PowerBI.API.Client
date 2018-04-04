@@ -26,7 +26,8 @@ namespace gbrueckl.PowerBI.API
         Boolean,
         String,
         DateTime,
-        Double
+        Double,
+        Decimal
     }
 
     public enum PBIDefaultRetentionPolicy

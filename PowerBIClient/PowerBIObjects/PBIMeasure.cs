@@ -22,10 +22,12 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             Expression = string.Format(expressionFormat, args);
         }
 
-        public PBIMeasure (string name, string expression)
+        public PBIMeasure (string name, string expression, string formatString = null, bool isHidden = false)
         {
             Name = name;
             Expression = expression;
+            FormatString = formatString;
+            IsHidden = isHidden;
         }
         public PBIMeasure(string name) : this(name, null) { }
         #endregion

@@ -90,8 +90,13 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             get { return _colSpan; }
             set { _colSpan = value; }
         }
+
+        [JsonIgnore]
+        public PBIAPIClient ParentPowerBIAPI { get; set; }
+
         [JsonIgnore]
         public PBIGroup ParentGroup { get; set; }
+
         [JsonIgnore]
         public string ApiURL
         {
@@ -103,9 +108,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                     return string.Format("v1.0/myorg/groups/0}/dashboards/{1}/tiles/{2}", ParentGroup.Id, ParentObject.Id, Id);
             }
         }
+
         [JsonIgnore]
         public IPBIObject ParentObject { get; set; }
-
         #endregion
 
         public void LoadDetailsFromPowerBI()

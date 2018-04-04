@@ -15,29 +15,60 @@ namespace SampleApplication
     {
         static void Main(string[] args)
         {
-            //Sample_Create_Model();
+            string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
 
-            //Sample_DataTable();
+            PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
 
-            Sample_Dataset_Refresh();
+            test_herbie(pbic);
+            //Test_Serialization(pbic);
+
+            //Sample_Create_Model(pbic);
+
+            //Sample_DataTable(pbic);
+
+            //Sample_Dataset_Refresh(pbic);
+
+            //Sample_Dataset_Rebind(pbic);
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
         }
 
-        private static void Sample_Create_Model()
+        private static void test_herbie(PBIAPIClient pbic)
         {
-            // AppID: the ID of the Azure AD Application
-            string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
+            PBIGroup myGroup = pbic.GetGroupByName("Reporting");
 
-            PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
+            PBIReport srcReport = myGroup.GetReportByName("OOEV36_mar9Data");
 
+            PBIDataset targetDataset = myGroup.GetDatasetByName("OOEV36_online");
+
+            srcReport.Clone("OOEV36_online", myGroup, targetDataset);
+        }
+
+        private static void Test_Serialization(PBIAPIClient pbic)
+        {
+            
+
+            PBIDataset dataset = new PBIDataset("myDataset", PBIDefaultMode.Streaming);
+
+            dataset.ParentPowerBIAPI = pbic;
+            dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
+
+            PBITable salesTable = new PBITable("Facts"); // create a PBI table manually
+            salesTable.Columns.Add(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true }); // hiding a column
+            salesTable.Columns.Add(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" }); // setting the Formatstring
+            salesTable.Columns.Add(new PBIColumn("Amount_BASE", PBIDataType.Double) { FormatString = "$ #,##0.00", IsHidden = true });
+
+
+            string x = PBIJsonHelper.SerializeObject(dataset);
+        }
+        private static void Sample_Create_Model(PBIAPIClient pbic)
+        {
             string datasetName = "MyPushDataset";
             string tableNameFacts = "MySalesTable";
             string tableNameProducts = "MyProductTable";
 
-            PBIDataset dataset = new PBIDataset(datasetName);
-            dataset.PBIDefaultMode = PBIDefaultMode.Push;
+            PBIDataset dataset = new PBIDataset(datasetName, PBIDefaultMode.Push);
             dataset.ParentPowerBIAPI = pbic;
             dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
 
@@ -89,16 +120,10 @@ namespace SampleApplication
             productsTable.PushRowsToPowerBI();
         }
 
-        private static void Sample_DataTable()
+        private static void Sample_DataTable(PBIAPIClient pbic)
         {
-            // AppID: the ID of the Azure AD Application
-            string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
-
-            PBIAPIClient powerBIClient = new PBIAPIClient(ApplicationID);
-
-            PBIDataset dataset = new PBIDataset("MyPushDataset");
-            dataset.PBIDefaultMode = PBIDefaultMode.Push;
-            dataset.ParentPowerBIAPI = powerBIClient;
+            PBIDataset dataset = new PBIDataset("MyPushDataset", PBIDefaultMode.Push);
+            dataset.ParentPowerBIAPI = pbic;
             dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
 
             // create a regular DataTable - but could also be derived from a SQL Database!
@@ -110,15 +135,20 @@ namespace SampleApplication
             productsTable.PublishToPowerBI(true);
         }
 
-        private static void Sample_Dataset_Refresh()
+        private static void Sample_Dataset_Refresh(PBIAPIClient pbic)
         {
-            // AppID: the ID of the Azure AD Application
-            string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
-
-            PBIAPIClient powerBIClient = new PBIAPIClient(ApplicationID);
-
-            PBIDataset powerBIDataset = powerBIClient.GetDatasetByName("TestRefresh");
+            PBIDataset powerBIDataset = pbic.GetDatasetByName("TestRefresh");
             powerBIDataset.Refresh();
+        }
+
+        private static void Sample_Dataset_Rebind(PBIAPIClient pbic)
+        {
+            PBIGroup powerBIGroup = pbic.GetGroupByName("ApiClient Test");
+
+            PBIReport powerBIReport = powerBIGroup.GetReportByName("Test Rebind");
+            PBIDataset newPowerBIDataset = powerBIGroup.GetDatasetByName("AdventureWorksDW2016");
+            
+            powerBIReport.Rebind(newPowerBIDataset);
         }
     }
 }

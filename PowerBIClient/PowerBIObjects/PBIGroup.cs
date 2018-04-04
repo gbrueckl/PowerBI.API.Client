@@ -18,6 +18,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
     public class PBIGroup : IPBIObject
     {
         #region Private Properties for Serialization
+        [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        private string ODataContext;
+
         [JsonProperty(PropertyName = "id", Required = Required.Always)]
         public string Id { get; set; }
 
@@ -27,6 +30,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         [JsonProperty(PropertyName = "isReadOnly", Required = Required.Always)]
         public bool IsReadOnly { get; set; }
 
+        private string _apiURL = null;
         #endregion
 
         #region Public Properties
@@ -92,8 +96,11 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         {
             get
             {
-                return string.Format("/v1.0/myorg/groups/{0}", Id);
+                if(string.IsNullOrEmpty(_apiURL))
+                    return string.Format("/v1.0/myorg/groups/{0}", Id);
+                return _apiURL;
             }
+            protected set { _apiURL = value; }
         }
 
         [JsonIgnore]

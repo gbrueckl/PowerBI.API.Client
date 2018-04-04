@@ -65,15 +65,19 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
             set { _columns = value; }
         }
+
         [JsonProperty(PropertyName = "rows", NullValueHandling = NullValueHandling.Ignore)]
         public new List<PBIRow> Rows { get { return null; } set { } }
+
         [JsonIgnore]
         public List<PBIMeasure> Measures { get { return _measures; } set { _measures = value; } }
+
         [JsonIgnore]
         public List<PBIRow> DataRows { get; set; }
 
         [JsonIgnore]
         public string Id { get { return null; } set { } }
+
         [JsonIgnore]
         public PBIDataset ParentDataset
         {
@@ -85,8 +89,13 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 //   ParentDataset.Tables.Add(this);
             }
         }
+
+        [JsonIgnore]
+        public PBIAPIClient ParentPowerBIAPI { get; set; }
+
         [JsonIgnore]
         public PBIGroup ParentGroup { get; set; }
+
         [JsonIgnore]
         public string ApiURL
         {
@@ -98,6 +107,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                     return string.Format("/v1.0/myorg/groups/{0}/datasets/{1}/tables/{2}", ParentGroup.Id, ParentDataset.Id, Name);
             }
         }
+
         [JsonIgnore]
         public IPBIObject ParentObject { get; set; }
         #endregion
@@ -120,7 +130,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                     powerBiAPI = ParentDataset.ParentPowerBIAPI;
             }
 
-            using (HttpWebResponse response = powerBiAPI.SendPUTRequest(ApiURL, JsonConvert.SerializeObject(this)))
+            using (HttpWebResponse response = powerBiAPI.SendPUTRequest(ApiURL, PBIJsonHelper.SerializeObject(this)))
             {
                 string result = response.ResponseToString();
             }
@@ -199,7 +209,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             if (rows != null)
                 DataRows.AddRange(rows.Rows);
 
-            PushRowsToPowerBI(JsonConvert.SerializeObject(DataRows), powerBiAPI);
+            PushRowsToPowerBI(PBIJsonHelper.SerializeObject(DataRows), powerBiAPI);
         }
 
         public void PushRowsToPowerBI(List<PBIRow> rows = null, PBIAPIClient powerBiAPI = null)
@@ -207,7 +217,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             if (rows != null)
                 DataRows = rows;
 
-            PushRowsToPowerBI(JsonConvert.SerializeObject(DataRows), powerBiAPI);
+            PushRowsToPowerBI(PBIJsonHelper.SerializeObject(DataRows), powerBiAPI);
         }
 
         private void StreamRowsToPowerBI(string JSON, string apiKey, PBIAPIClient powerBiAPI = null)
@@ -313,5 +323,15 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             return objList.Items;
         }
         #endregion
+
+        #region ShouldSerialize-Functions
+        public bool ShouldSerialize_measures()
+        {
+            if (ParentDataset == null || ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
+                return false;
+
+            return true;
+        }
+        #endregion  
     }
 }
