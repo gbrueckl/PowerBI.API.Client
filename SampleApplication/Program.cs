@@ -36,13 +36,15 @@ namespace SampleApplication
 
         private static void test_herbie(PBIAPIClient pbic)
         {
-            PBIGroup myGroup = pbic.GetGroupByName("Reporting");
+            PBIGroup myGroup = pbic; // "My Workspace"
 
-            PBIReport srcReport = myGroup.GetReportByName("OOEV36_mar9Data");
+            PBIReport srcReport = myGroup.GetReportByName("Hyperion Vertriebsanalyse Budget");
 
-            PBIDataset targetDataset = myGroup.GetDatasetByName("OOEV36_online");
+            PBIDataset targetDataset = myGroup.GetDatasetByName("Hyperion Vertriebsanalyse Linked");
 
-            srcReport.Clone("OOEV36_online", myGroup, targetDataset);
+            srcReport.Clone("Hyperion Vertriebsanalyse Budget2", myGroup, targetDataset);
+
+            //srcReport.Rebind(targetDataset);
         }
 
         private static void Test_Serialization(PBIAPIClient pbic)

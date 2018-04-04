@@ -102,11 +102,20 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         public void Clone(string newReportName, PBIGroup targetGroup, PBIDataset targetDataset)
         {
-            string json = JsonConvert.SerializeObject(this);
             if (ParentPowerBIAPI == null)
                 throw new Exception("No PowerBI API Object was supplied!");
 
-            using (HttpWebResponse response = ParentPowerBIAPI.SendPOSTRequest(ApiURL + "/Clone", "{\"name\": \"" + newReportName + "\", \"targetWorkspaceId\": \"" + targetGroup.Id + "\", \"targetModelId\": \"" + targetDataset.Id + "\"}"))
+            string body;
+
+            body = "{\"name\": \"" + newReportName + "\", \"targetModelId\": \"" + targetDataset.Id + "\"";
+
+            if(targetGroup != null && targetGroup.ParentGroup != null)
+            {
+                body = body + ", \"targetWorkspaceId\": \"" + targetGroup.Id + "\"";
+            }
+            body = body + "}";
+
+            using (HttpWebResponse response = ParentPowerBIAPI.SendPOSTRequest(ApiURL + "/Clone", body))
             {
                 string result = response.ResponseToString();
             }

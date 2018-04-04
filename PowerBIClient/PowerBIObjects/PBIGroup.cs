@@ -43,8 +43,10 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 foreach (var item in objList.Items)
                 {
                     item.ParentPowerBIAPI = this.ParentPowerBIAPI;
-                    item.ParentGroup = this;
                     item.ParentObject = this;
+
+                    if (!(this is PBIAPIClient)) // if the caller is a PBIClient, we do not have a ParentGroup but need to use "My Workspace" instead
+                        item.ParentGroup = this;
                 }
 
                 return objList.Items;
@@ -60,8 +62,10 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 foreach (var item in objList.Items)
                 {
                     item.ParentPowerBIAPI = this.ParentPowerBIAPI;
-                    item.ParentGroup = this;
                     item.ParentObject = this;
+
+                    if (!(this is PBIAPIClient)) // if the caller is a PBIClient, we do not have a ParentGroup but need to use "My Workspace" instead
+                        item.ParentGroup = this;
                 }
 
                 return objList.Items;
@@ -77,8 +81,10 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 foreach (var item in objList.Items)
                 {
                     item.ParentPowerBIAPI = this.ParentPowerBIAPI;
-                    item.ParentGroup = this;
                     item.ParentObject = this;
+
+                    if (!(this is PBIAPIClient)) // if the caller is a PBIClient, we do not have a ParentGroup but need to use "My Workspace" instead
+                        item.ParentGroup = this;
                 }
 
                 return objList.Items;
