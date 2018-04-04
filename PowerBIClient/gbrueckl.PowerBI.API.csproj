@@ -72,6 +72,7 @@
     <Compile Include="PowerBIObjects\PBIDatasource.cs" />
     <Compile Include="PowerBIObjects\PBIGroup.cs" />
     <Compile Include="PBIAPIClient.cs" />
+    <Compile Include="PowerBIObjects\PBIRefresh.cs" />
     <Compile Include="PowerBIObjects\PBIRelationship.cs" />
     <Compile Include="PowerBIObjects\PBIColumn.cs" />
     <Compile Include="PowerBIObjects\PBIDashboard.cs" />
