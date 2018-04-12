@@ -119,7 +119,33 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             {
                 string result = response.ResponseToString();
             }
+        }
 
+        public void Export(string outputFilePath)
+        {
+            if (ParentPowerBIAPI == null)
+                throw new Exception("No PowerBI API Object was supplied!");
+
+            using (HttpWebResponse response = ParentPowerBIAPI.SendGETRequest(ApiURL + "/Export"))
+            {
+                using (Stream file = File.Create(outputFilePath))
+                {
+                    response.GetResponseStream().CopyTo(file);
+                }
+
+                string result = response.ResponseToString();
+            }
+        }
+
+        public void Delete()
+        {
+            if (ParentPowerBIAPI == null)
+                throw new Exception("No PowerBI API Object was supplied!");
+
+            using (HttpWebResponse response = ParentPowerBIAPI.SendDELETERequest(ApiURL))
+            {
+                string result = response.ResponseToString();
+            }
         }
         #endregion
     }
