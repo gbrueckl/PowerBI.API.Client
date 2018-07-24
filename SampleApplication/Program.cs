@@ -19,6 +19,7 @@ namespace SampleApplication
 
             PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
 
+            //Test_Rebind(pbic);
             Test_Export(pbic);
             //Test_Serialization(pbic);
 
@@ -34,15 +35,15 @@ namespace SampleApplication
             Console.ReadLine();
         }
 
-        private static void test_herbie(PBIAPIClient pbic)
+        private static void Test_Rebind(PBIAPIClient pbic)
         {
             PBIGroup myGroup = pbic; // "My Workspace"
 
-            PBIReport srcReport = myGroup.GetReportByName("Hyperion Vertriebsanalyse Adhoc");
+            PBIReport srcReport = myGroup.GetReportByName("asdf");
 
-            PBIDataset targetDataset = myGroup.GetDatasetByName("Hyperion Vertriebsanalyse Data");
+            PBIDataset targetDataset = myGroup.GetDatasetByName("Adobe Analytics Traffic Analysis");
 
-            //srcReport.Clone("Hyperion Vertriebsanalyse Budget2", myGroup, targetDataset);
+            srcReport.Clone("asdf2", myGroup, targetDataset);
 
             srcReport.Rebind(targetDataset);
         }
@@ -51,9 +52,9 @@ namespace SampleApplication
         {
             PBIGroup myGroup = pbic; // "My Workspace"
 
-            PBIReport report = myGroup.GetReportByName("Hyperion Vertriebsanalyse");
+            PBIReport report = myGroup.GetReportByName("MyReport");
 
-            report.Export("D:\\out.pbix");
+            report.Export("D:\\MyReport.pbix");
         }
 
         private static void Test_Serialization(PBIAPIClient pbic)
