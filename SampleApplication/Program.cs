@@ -19,10 +19,11 @@ namespace SampleApplication
 
             PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
 
+            Test_CreateGroup(pbic);
             //Test_Rebind(pbic);
             //Test_Export(pbic);
             //Test_Serialization(pbic);
-            Test_Tiles(pbic);
+            //Test_Tiles(pbic);
             //Sample_Create_Model(pbic);
 
             //Sample_DataTable(pbic);
@@ -33,6 +34,13 @@ namespace SampleApplication
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
+        }
+
+        private static void Test_CreateGroup(PBIAPIClient pbic)
+        {
+            PBIGroup myGroup = pbic.CreateGroup("MyTestGroup");
+
+            Console.WriteLine(myGroup.ToString());
         }
 
         private static void Test_Tiles(PBIAPIClient pbic)

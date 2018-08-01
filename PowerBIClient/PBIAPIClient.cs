@@ -204,6 +204,29 @@ namespace gbrueckl.PowerBI.API
                 throw new KeyNotFoundException(string.Format("No Group with name '{0}' could be found in PowerBI!", name), e);
             }
         }
+
+        public PBIGroup CreateGroup(string name)
+        {
+            try
+            {
+                PBIGroup ret;
+                using (HttpWebResponse response = this.SendPOSTRequest(ApiURL, PBIAPI.Groups, "{\"name\":\"" + name + "\"}"))
+                {
+                    string result = response.ResponseToString();
+                    ret = JsonConvert.DeserializeObject<PBIGroup>(result);
+
+                    ret.ParentPowerBIAPI = this;
+                    ret.ParentGroup = null;
+                    ret.ParentObject = this;
+                }
+                return ret;
+            }
+            catch (Exception e)
+            {
+                //return null;
+                throw e;
+            }
+        }
         public HttpWebResponse SendGenericWebRequest(string url, string method, string body = null)
         {
             HttpWebResponse response = null;
