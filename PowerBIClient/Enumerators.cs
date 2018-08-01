@@ -17,7 +17,8 @@ namespace gbrueckl.PowerBI.API
         Datasources,
         Rows,
         Refreshes,
-        Users
+        Users,
+        Imports
     }
 
     // Most enumerators were extracted from here: https://powerbi.microsoft.com/en-us/blog/newdatasets/
@@ -89,5 +90,13 @@ namespace gbrueckl.PowerBI.API
         Contributor,
         Member,
         None
+    }
+
+    public enum PBIImportConflictHandlerMode
+    {
+        Abort,
+        CreateOrOverwrite,
+        Ignore,
+        Overwrite
     }
 }

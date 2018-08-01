@@ -25,6 +25,17 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
             Relationships = new List<PBIRelationship>();
         }
+
+        public PBIDataset(Dataset dataset, IPBIObject pbiObject)
+        {
+            Id = dataset.Id;
+            Name = dataset.Name;
+            WebUrl = dataset.WebUrl;
+
+            ParentPowerBIAPI = pbiObject.ParentPowerBIAPI;
+            ParentObject = pbiObject.ParentObject;
+            ParentGroup = pbiObject.ParentGroup;
+        }
         #endregion
         #region Private Properties for Serialization
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
@@ -352,7 +363,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 else
                     powerBiAPI = ParentPowerBIAPI;
             }
-            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL +  "/refreshes", null))
+            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL +  "/refreshes", ""))
             {
                 string result = response.ResponseToString();
             }
@@ -367,7 +378,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 else
                     powerBiAPI = ParentPowerBIAPI;
             }
-            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "/takeover", null))
+            using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "/takeover", ""))
             {
                 string result = response.ResponseToString();
             }

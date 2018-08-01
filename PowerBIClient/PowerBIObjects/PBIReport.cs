@@ -30,7 +30,18 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         */
 
         #region Constructors
+        public PBIReport(Report report, IPBIObject pbiObject)
+        {
+            Id = report.Id;
+            Name = report.Name;
+            EmbedUrl = report.EmbedUrl;
+            WebUrl = report.WebUrl;
+            DatasetId = report.DatasetId;
 
+            ParentPowerBIAPI = pbiObject.ParentPowerBIAPI;
+            ParentObject = pbiObject.ParentObject;
+            ParentGroup = pbiObject.ParentGroup;
+        }
         #endregion
 
         #region Private Properties for Serialization
@@ -81,6 +92,18 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         }
         [JsonIgnore]
         public IPBIObject ParentObject { get; set; }
+
+        public PBIDataset Dataset
+        {
+            get
+            {
+                return ((PBIGroup)ParentObject).GetDatasetByID(DatasetId);
+            }
+            set
+            {
+                Rebind(value);
+            }
+        }
         #endregion
 
         #region Public Functions

@@ -237,7 +237,7 @@ namespace gbrueckl.PowerBI.API
             request.ContentType = "application/json; charset=utf-8";
             request.Headers.Add("Authorization", String.Format("Bearer {0}", AccessToken));
 
-            if (body != null)
+            if (!string.IsNullOrEmpty(body))
             {
                 byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(body);
                 request.ContentLength = byteArray.Length;
@@ -282,7 +282,7 @@ namespace gbrueckl.PowerBI.API
             request.ContentType = "application/json; charset=utf-8";
             request.Headers.Add("Authorization", String.Format("Bearer {0}", AccessToken));
 
-            if (body != null)
+            if (!string.IsNullOrEmpty(body))
             {
                 byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(body);
                 request.ContentLength = byteArray.Length;
@@ -340,6 +340,28 @@ namespace gbrueckl.PowerBI.API
         {
             return SendApIRequest(api, "POST", json);
         }
+
+        public HttpWebResponse SendPOSTRequest(string api, Stream content)
+        {
+            throw new NotImplementedException("Not yet implemented!");
+            /*
+            var pbixBodyContent = new StreamContent(File.Open(pbixPath, FileMode.Open));
+            // add headers for request bod content
+            pbixBodyContent.Headers.Add("Content-Type", "application/octet-stream");
+            pbixBodyContent.Headers.Add("Content-Disposition",
+                                         @"form-data; name=""file""; filename=""" + pbixFilePath + @"""");
+            // load PBIX content into body using multi-part form data
+            MultipartFormDataContent requestBody = new MultipartFormDataContent(Guid.NewGuid().ToString());
+            requestBody.Add(pbixBodyContent);
+            // create and configure HttpClient
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
+            // post request
+            var response = client.PostAsync(restUrlImportPbix, requestBody).Result;
+            return SendApIRequest(api, "POST", json);
+            */
+        }
         public HttpWebResponse SendPOSTRequest(PBIAPI api, string json)
         {
             return SendPOSTRequest(api.ToString().ToLower(), json);
@@ -351,6 +373,28 @@ namespace gbrueckl.PowerBI.API
         public async Task<HttpWebResponse> SendPOSTRequestAsync(string api, string json)
         {
             return await SendWebRequestAsync(api, "POST", json);
+        }
+
+        public async Task<HttpWebResponse> SendPOSTRequestAsync(string api, Stream content)
+        {
+            throw new NotImplementedException("Not yet implemented!");
+            /*
+            var pbixBodyContent = new StreamContent(File.Open(pbixPath, FileMode.Open));
+            // add headers for request bod content
+            pbixBodyContent.Headers.Add("Content-Type", "application/octet-stream");
+            pbixBodyContent.Headers.Add("Content-Disposition",
+                                         @"form-data; name=""file""; filename=""" + pbixFilePath + @"""");
+            // load PBIX content into body using multi-part form data
+            MultipartFormDataContent requestBody = new MultipartFormDataContent(Guid.NewGuid().ToString());
+            requestBody.Add(pbixBodyContent);
+            // create and configure HttpClient
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
+            // post request
+            var response = client.PostAsync(restUrlImportPbix, requestBody).Result;
+            return await SendApIRequestAsync(api, "POST", json);
+            */
         }
         public async Task<HttpWebResponse> SendPOSTRequestAsync(PBIAPI api, string json)
         {

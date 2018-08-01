@@ -19,8 +19,11 @@ namespace SampleApplication
 
             PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
 
-            Test_RemoveGroupMember(pbic);
-            Test_AddGroupMember(pbic);
+
+            Test_GetImports(pbic);
+            //Test_GetImports(pbic);
+            //Test_RemoveGroupMember(pbic);
+            //Test_AddGroupMember(pbic);
             //Test_GetGroupMembers(pbic);
             //Test_CreateGroup(pbic);
             //Test_Rebind(pbic);
@@ -39,6 +42,13 @@ namespace SampleApplication
             Console.ReadLine();
         }
 
+
+        private static void Test_GetImports(PBIAPIClient pbic)
+        {
+            List<PBIImport> imports = pbic.Imports;
+
+            Console.WriteLine(imports.Count);
+        }
 
         private static void Test_RemoveGroupMember(PBIAPIClient pbic)
         {
