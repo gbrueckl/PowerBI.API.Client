@@ -103,9 +103,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             get
             {
                 if (ParentGroup == null)
-                    return string.Format("/v1.0/myorg/dashboards{0}/tiles/{1}", ParentObject.Id, Id);
+                    return string.Format("/v1.0/myorg/dashboards/{0}/tiles/{1}", ParentObject.Id, Id);
                 else
-                    return string.Format("v1.0/myorg/groups/0}/dashboards/{1}/tiles/{2}", ParentGroup.Id, ParentObject.Id, Id);
+                    return string.Format("/v1.0/myorg/groups/{0}/dashboards/{1}/tiles/{2}", ParentGroup.Id, ParentObject.Id, Id);
             }
         }
 

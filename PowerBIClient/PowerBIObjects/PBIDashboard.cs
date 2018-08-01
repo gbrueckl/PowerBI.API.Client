@@ -77,7 +77,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 if (ParentGroup == null)
                     return string.Format("/v1.0/myorg/dashboards/{0}", Id);
                 else
-                    return string.Format("v1.0/myorg/groups/{0}/dashboards/{1}", ParentGroup.Id, Id);
+                    return string.Format("/v1.0/myorg/groups/{0}/dashboards/{1}", ParentGroup.Id, Id);
             }
         }
         [JsonIgnore]
@@ -97,6 +97,19 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             return null;
         }
 
+        public PBITile GetTileByID(string id)
+        {
+            try
+            {
+                return Tiles.Single(x => string.Equals(x.Id, id, StringComparison.InvariantCultureIgnoreCase));
+            }
+            catch (Exception e)
+            {
+                //return null;
+                throw new KeyNotFoundException(string.Format("No Tile with ID '{0}' could be found in PowerBI!", id), e);
+            }
+        }
+
         public void LoadTilesFromPowerBI()
         {
             PBIObjectList<PBITile> objList = JsonConvert.DeserializeObject<PBIObjectList<PBITile>>(ParentPowerBIAPI.SendGETRequest(ApiURL, PBIAPI.Tiles).ResponseToString());
@@ -105,6 +118,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             {
                 item.ParentGroup = this.ParentGroup;
                 item.ParentObject = this;
+                item.ParentPowerBIAPI = this.ParentPowerBIAPI;
             }
 
             Tiles = objList.Items;
