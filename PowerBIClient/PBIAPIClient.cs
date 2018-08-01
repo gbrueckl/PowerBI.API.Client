@@ -402,9 +402,13 @@ namespace gbrueckl.PowerBI.API
         {
             return SendApIRequest(api, "DELETE");
         }
-        public HttpWebResponse SendDELETERequest(string apiUrl, PBIAPI api)
+        public HttpWebResponse SendDELETERequest(string apiUrl, PBIAPI api, params string[] parameters)
         {
-            return SendApIRequest(apiUrl + "/" + api.ToString().ToLower(), "DELETE");
+            string dynamicParameters = "";
+            if (parameters != null)
+                dynamicParameters = "/" + string.Join("/", parameters);
+
+            return SendApIRequest(apiUrl + "/" + api.ToString().ToLower() + dynamicParameters, "DELETE");
         }
         public async Task<HttpWebResponse> SendDELETERequestAsync(string api)
         {

@@ -91,6 +91,16 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        public List<PBIGroupMember> GroupMembers
+        {
+            get
+            {
+                PBIObjectList<PBIGroupMember> objList = JsonConvert.DeserializeObject<PBIObjectList<PBIGroupMember>>(ParentPowerBIAPI.SendGETRequest(ApiURL, PBIAPI.Users).ResponseToString());
+
+                return objList.Items;
+            }
+        }
+
 
         [JsonIgnore]
         public PBIAPIClient ParentPowerBIAPI { get; set; }
@@ -163,6 +173,35 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             {
                 //return null;
                 throw new KeyNotFoundException(string.Format("No Dashboard with name '{0}' could be found in PowerBI!", name), e);
+            }
+        }
+
+        public void AddGroupMember(string username, PBIGroupAccessRight accessRight)
+        {
+            PBIGroupMember newMember = new PBIGroupMember() { Name = username, AccessRight = accessRight };
+
+            AddGroupMember(newMember);
+        }
+
+        public void AddGroupMember(PBIGroupMember groupMember)
+        {
+            if (this is PBIAPIClient) // if the caller is a PBIClient, we do not have a ParentGroup but need to use "My Workspace" instead
+                throw new Exception("Cannot add users to 'My Workspace'!");
+
+            using (HttpWebResponse response = ParentPowerBIAPI.SendPOSTRequest(ApiURL, PBIAPI.Users, PBIJsonHelper.SerializeObject(groupMember)))
+            {
+                string result = response.ResponseToString();
+            }
+        }
+
+        public void RemoveGroupMember(string username)
+        {
+            if (this is PBIAPIClient) // if the caller is a PBIClient, we do not have a ParentGroup but need to use "My Workspace" instead
+                throw new Exception("Cannot remove users from 'My Workspace'!");
+
+            using (HttpWebResponse response = ParentPowerBIAPI.SendDELETERequest(ApiURL, PBIAPI.Users, username))
+            {
+                string result = response.ResponseToString();
             }
         }
         #endregion

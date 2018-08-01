@@ -19,7 +19,10 @@ namespace SampleApplication
 
             PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
 
-            Test_CreateGroup(pbic);
+            Test_RemoveGroupMember(pbic);
+            Test_AddGroupMember(pbic);
+            //Test_GetGroupMembers(pbic);
+            //Test_CreateGroup(pbic);
             //Test_Rebind(pbic);
             //Test_Export(pbic);
             //Test_Serialization(pbic);
@@ -34,6 +37,37 @@ namespace SampleApplication
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
+        }
+
+
+        private static void Test_RemoveGroupMember(PBIAPIClient pbic)
+        {
+            PBIGroup myGroup = pbic.GetGroupByName("MyTestGroup");
+
+            myGroup.RemoveGroupMember("svc_powerbi@gbrueckl.at");
+
+            Console.WriteLine(myGroup.GroupMembers.Count);
+        }
+
+        private static void Test_AddGroupMember(PBIAPIClient pbic)
+        {
+            PBIGroup myGroup = pbic.GetGroupByName("MyTestGroup");
+
+            myGroup.AddGroupMember("svc_powerbi@gbrueckl.at", PBIGroupAccessRight.Admin);
+
+            Console.WriteLine(myGroup.GroupMembers.Count);
+        }
+
+        private static void Test_GetGroupMembers(PBIAPIClient pbic)
+        {
+            PBIGroup myGroup = pbic.GetGroupByName("MyTestGroup");
+
+            foreach(PBIGroupMember gm in myGroup.GroupMembers)
+            {
+                Console.WriteLine(PBIJsonHelper.SerializeObject(gm));
+            }
+
+            Console.WriteLine(myGroup.GroupMembers.Count);
         }
 
         private static void Test_CreateGroup(PBIAPIClient pbic)

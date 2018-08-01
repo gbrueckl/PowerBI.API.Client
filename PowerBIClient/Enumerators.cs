@@ -16,7 +16,8 @@ namespace gbrueckl.PowerBI.API
         Tables,
         Datasources,
         Rows,
-        Refreshes
+        Refreshes,
+        Users
     }
 
     // Most enumerators were extracted from here: https://powerbi.microsoft.com/en-us/blog/newdatasets/
@@ -80,5 +81,13 @@ namespace gbrueckl.PowerBI.API
         None,
         Average,
         DistinctCount
+    }
+
+    public enum PBIGroupAccessRight
+    {
+        Admin,
+        Contributor,
+        Member,
+        None
     }
 }
