@@ -134,7 +134,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
             body = "{\"name\": \"" + newReportName + "\", \"targetModelId\": \"" + targetDataset.Id + "\"";
 
-            if(targetGroup != null && targetGroup.ParentGroup != null)
+            if(targetGroup != null)
             {
                 body = body + ", \"targetWorkspaceId\": \"" + targetGroup.Id + "\"";
             }
