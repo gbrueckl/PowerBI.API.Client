@@ -30,6 +30,8 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         */
 
         #region Constructors
+        public PBIReport()
+        { }
         public PBIReport(Report report, IPBIObject pbiObject)
         {
             Id = report.Id;

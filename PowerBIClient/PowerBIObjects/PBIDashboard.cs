@@ -15,6 +15,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
     public class PBIDashboard : IPBIObject
     {
         #region Constructors
+        public PBIDashboard() { }
         #endregion
         #region Private Properties for Serialization
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
