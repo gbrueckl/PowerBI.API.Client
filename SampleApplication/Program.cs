@@ -17,7 +17,7 @@ namespace SampleApplication
         {
             string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
 
-            PBIAPIClient pbic = new PBIAPIClient(ApplicationID, "myuser@mydomain.at", "Pass@word1234!");
+            PBIAPIClient pbic = new PBIAPIClient(ApplicationID, "myUser@myDomain.com", "Pass@word1234!");
 
             Test_Parameters(pbic);
             //Test_Import(pbic);
@@ -124,11 +124,11 @@ namespace SampleApplication
         {
             PBIGroup myGroup = pbic; // "My Workspace"
 
-            PBIReport srcReport = myGroup.GetReportByName("asdf");
+            PBIReport srcReport = myGroup.GetReportByName("myReport");
 
-            PBIDataset targetDataset = myGroup.GetDatasetByName("Adobe Analytics Traffic Analysis");
+            PBIDataset targetDataset = myGroup.GetDatasetByName("myDataset");
 
-            srcReport.Clone("asdf2", myGroup, targetDataset);
+            srcReport.Clone("myReport_Cloned", myGroup, targetDataset);
 
             srcReport.Rebind(targetDataset);
         }
