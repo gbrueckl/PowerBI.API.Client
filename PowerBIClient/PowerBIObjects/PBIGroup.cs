@@ -11,24 +11,17 @@ using System.Web.Script.Serialization;
 using gbrueckl.PowerBI.API.PowerBIObjects;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Newtonsoft.Json;
+using Microsoft.PowerBI.Api.V2;
 using Microsoft.PowerBI.Api.V2.Models;
+using System.Net.Http;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects
 {
-    public class PBIGroup : IPBIObject
+    public class PBIGroup : Group, IPBIObject
     {
         #region Private Properties for Serialization
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         private string ODataContext;
-
-        [JsonProperty(PropertyName = "id", Required = Required.Always)]
-        public string Id { get; set; }
-
-        [JsonProperty(PropertyName = "name", Required = Required.Always)]
-        public string Name { get; set; }
-
-        [JsonProperty(PropertyName = "isReadOnly", Required = Required.Always)]
-        public bool IsReadOnly { get; set; }
 
         private string _apiURL = null;
         #endregion
@@ -224,43 +217,29 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
-        public PBIImport ImportPBIX(string displayName, string pbixPath)
+        public PBIImport ImportPBIX(string displayName, string pbixPath, PBIImportConflictHandlerMode nameConflict = PBIImportConflictHandlerMode.Abort)
         {
-            string fullUrl = string.Format("{0}/{1}?datasetDisplayName={2}", ApiURL, PBIAPI.Imports.ToString().ToLower(), displayName);
+            string fullUrl = string.Format("{0}/{1}?datasetDisplayName={2}&nameConflict={3}", ApiURL, PBIAPI.Imports.ToString().ToLower(), displayName, nameConflict.ToString());
 
             FileStream content = File.Open(pbixPath, FileMode.Open);
+            Dictionary<string, string> contentHeaders = new Dictionary<string, string>();
+            contentHeaders.Add("Content-Type", "application/octet-stream");
+            contentHeaders.Add("Content-Disposition", @"form-data; name=""file""; filename=""" + pbixPath + @"""");
 
-            using (HttpWebResponse response = ParentPowerBIAPI.SendPOSTRequest(fullUrl, content))
+            using (HttpResponseMessage response = ParentPowerBIAPI.SendPOSTRequest(fullUrl, content, contentHeaders))
             {
                 string result = response.ResponseToString();
 
-                return JsonConvert.DeserializeObject<PBIImport>(result);
-            }
+                PBIImport import = JsonConvert.DeserializeObject<PBIImport>(result);
 
-            /*
-            // create REST URL with import name in quer string
-            string restUrlImportPbix = ProgramConstants.PowerBiServiceRootUrl + "imports?datasetDisplayName=" + importName;
-            // load PBIX file into StreamContent object
-            var pbixBodyContent = new StreamContent(File.Open(pbixPath, FileMode.Open));
-            // add headers for request bod content
-            pbixBodyContent.Headers.Add("Content-Type", "application/octet-stream");
-            pbixBodyContent.Headers.Add("Content-Disposition",
-                                         @"form-data; name=""file""; filename=""" + pbixFilePath + @"""");
-            // load PBIX content into body using multi-part form data
-            MultipartFormDataContent requestBody = new MultipartFormDataContent(Guid.NewGuid().ToString());
-            requestBody.Add(pbixBodyContent);
-            // create and configure HttpClient
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
-            // post request
-            var response = client.PostAsync(restUrlImportPbix, requestBody).Result;
-            // check for success
-            if (response.StatusCode.ToString().Equals("Accepted"))
-            {
-                Console.WriteLine("Import process complete: " + response.Content.ReadAsStringAsync().Result);
+                import.ParentObject = this;
+                import.ParentPowerBIAPI = ParentPowerBIAPI;
+
+                if (!(this is PBIAPIClient)) // if the caller is a PBIClient, we do not have a ParentGroup but need to use "My Workspace" instead
+                    import.ParentGroup = this;
+
+                return import;
             }
-            */
         }
         #endregion
 

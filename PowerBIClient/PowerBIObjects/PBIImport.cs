@@ -83,7 +83,16 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         #endregion
 
         #region Public Functions
-        
+        public PBIImport GetState()
+        {
+            PBIImport import = JsonConvert.DeserializeObject<PBIImport>(ParentPowerBIAPI.SendGETRequest(ApiURL).ResponseToString());
+
+            import.ParentObject = ParentObject;
+            import.ParentPowerBIAPI = ParentPowerBIAPI;
+            import.ParentGroup = ParentGroup;
+
+            return import;
+        }
         #endregion 
     }
 }

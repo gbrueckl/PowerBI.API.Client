@@ -68,6 +68,8 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="PBIJsonHelper.cs" />
     <Compile Include="PowerBIObjects\GenericObjects\IPBIObject.cs" />
+    <Compile Include="PowerBIObjects\PBIDatasetParameters.cs" />
+    <Compile Include="PowerBIObjects\PBIDatasetParameter.cs" />
     <Compile Include="PowerBIObjects\PBIImport.cs" />
     <Compile Include="PowerBIObjects\PBIGroupMember.cs" />
     <Compile Include="PowerBIObjects\PBIGatewayDatasource.cs" />

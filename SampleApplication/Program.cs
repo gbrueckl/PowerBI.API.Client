@@ -17,10 +17,11 @@ namespace SampleApplication
         {
             string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
 
-            PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
+            PBIAPIClient pbic = new PBIAPIClient(ApplicationID, "myuser@mydomain.at", "Pass@word1234!");
 
-
-            Test_GetImports(pbic);
+            Test_Parameters(pbic);
+            //Test_Import(pbic);
+            //Test_GetImports(pbic);
             //Test_GetImports(pbic);
             //Test_RemoveGroupMember(pbic);
             //Test_AddGroupMember(pbic);
@@ -40,6 +41,27 @@ namespace SampleApplication
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
+        }
+
+        private static void Test_Parameters(PBIAPIClient pbic)
+        {
+            PBIDatasetParameters parameters = new PBIDatasetParameters();
+
+            parameters.Items.Add(new PBIDatasetParameter("myTextParameter", "myUpdatedValue2"));
+            parameters.Items.Add(new PBIDatasetParameter("myIntParameter", "789"));
+
+            PBIDataset dataset = pbic.GetDatasetByName("myDataset");
+
+            dataset.UpdateParameters(parameters);
+
+        }
+        private static void Test_Import(PBIAPIClient pbic)
+        {
+            PBIImport import = pbic.ImportPBIX("myDataset", @"D:\Desktop\myDataset.pbix", PBIImportConflictHandlerMode.CreateOrOverwrite);
+
+            import = import.GetState();
+
+            int i = 0;
         }
 
 

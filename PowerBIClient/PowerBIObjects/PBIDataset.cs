@@ -384,6 +384,45 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        public void UpdateParameters(params string[] keyValues)
+        {
+            UpdateParameters(null, new PBIDatasetParameters(keyValues));
+        }
+
+        public void UpdateParameters(PBIAPIClient powerBiAPI, params string[] keyValues)
+        {
+            UpdateParameters(powerBiAPI, new PBIDatasetParameters(keyValues));
+        }
+
+        public void UpdateParameters(PBIDatasetParameters parameters)
+        {
+            UpdateParameters(null, parameters);
+        }
+
+        public void UpdateParameters(PBIAPIClient powerBiAPI, PBIDatasetParameters parameters)
+        {
+            if (powerBiAPI == null)
+            {
+                if (ParentPowerBIAPI == null)
+                    throw new Exception("No PowerBI API Object was supplied!");
+                else
+                    powerBiAPI = ParentPowerBIAPI;
+            }
+
+            try
+            {
+                using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "/Default.UpdateParameters", PBIJsonHelper.SerializeObject(parameters)))
+                {
+                    string result = response.ResponseToString();
+                }
+            }
+            catch(Exception e)
+            {
+                if (!e.Message.Contains("DMTS_MonikerHasNoDatasourcesToBindError"))
+                    throw e;
+            }
+        }
+
         public void DeleteRowsFromPowerBI(PBIAPIClient powerBiAPI)
         {
             foreach (PBITable table in Tables)

@@ -5,6 +5,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,26 @@ namespace gbrueckl.PowerBI.API
             {
                 return data.StreamToString();
             }
+        }
+
+        public static string ResponseToString(this HttpResponseMessage webResponse)
+        {
+            using (Stream data = webResponse.Content.ReadAsStreamAsync().Result)
+            {
+                return data.StreamToString();
+            }
+        }
+
+        public static long CopyStream(Stream input, Stream output)
+        {
+            byte[] buffer = new byte[32768];
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                output.Write(buffer, 0, read);
+            }
+
+            return input.Length;
         }
 
         public static void AddOrUpdateTable(this PBIDataset dataset, PBITable newTable)

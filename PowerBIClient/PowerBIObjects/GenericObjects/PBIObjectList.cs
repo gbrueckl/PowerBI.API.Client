@@ -11,9 +11,21 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
     [JsonObject]
     public class PBIObjectList<T> : IList<T>
     {
+        public string ListPropertyName = "value";
+
+        public string GetListPropertyName()
+        {
+            return ListPropertyName;
+        }
+
         #region Private Properties for Serialization
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         private string ODataContext;
+
+        public PBIObjectList()
+        {
+            Items = new List<T>();
+        }
 
         public T this[int index] { get { return ((IList<T>)Items)[index]; } set { ((IList<T>)Items)[index] = value; } }
 

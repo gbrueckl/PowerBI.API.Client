@@ -57,6 +57,7 @@ namespace gbrueckl.PowerBI.API
                     return shouldSerialize.HasValue ? shouldSerialize.Value : true;
                 };
             }
+
             return property;
         }
     }

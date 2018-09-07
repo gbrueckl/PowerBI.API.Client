@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using gbrueckl.PowerBI.API.PowerBIObjects;
@@ -25,7 +27,7 @@ namespace gbrueckl.PowerBI.API
         public const string AuthorityUri = "https://login.microsoftonline.com/common/oauth2/authorize";
 
         //Base API URL
-        private const string PBIApiUrl = "https://api.powerbi.com";
+        public const string PBIApiRootUrl = "https://api.powerbi.com";
 
         private string _clientID;
         private AuthenticationContext _authenticationContext = null;
@@ -113,7 +115,7 @@ namespace gbrueckl.PowerBI.API
             }
         }
 
-        private string AccessToken
+        public string AccessToken
         {
             get
             {
@@ -121,7 +123,7 @@ namespace gbrueckl.PowerBI.API
                     Connect();
                 return _accessToken;
             }
-            set
+            private set
             {
                 _accessToken = value;
             }
@@ -227,6 +229,20 @@ namespace gbrueckl.PowerBI.API
                 throw e;
             }
         }
+        public HttpResponseMessage SendPOSTStream(string url, StreamContent content)
+        {
+            MultipartFormDataContent requestBody = new MultipartFormDataContent(Guid.NewGuid().ToString());
+            requestBody.Add(content);
+            // create and configure HttpClient
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + ParentPowerBIAPI.AccessToken);
+            // post request
+            var response = client.PostAsync(url, requestBody).Result;
+            // check for success
+
+            return response;
+        }
         public HttpWebResponse SendGenericWebRequest(string url, string method, string body = null)
         {
             HttpWebResponse response = null;
@@ -239,6 +255,7 @@ namespace gbrueckl.PowerBI.API
 
             if (!string.IsNullOrEmpty(body))
             {
+                
                 byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(body);
                 request.ContentLength = byteArray.Length;
 
@@ -275,7 +292,7 @@ namespace gbrueckl.PowerBI.API
         {
             HttpWebResponse response = null;
 
-            HttpWebRequest request = System.Net.WebRequest.Create(string.Format("{0}{1}", PBIApiUrl, api)) as System.Net.HttpWebRequest;
+            HttpWebRequest request = System.Net.WebRequest.Create(string.Format("{0}{1}", PBIApiRootUrl, api)) as System.Net.HttpWebRequest;
             request.KeepAlive = true;
             request.Method = method.ToUpper();
             request.ContentLength = 0;
@@ -312,7 +329,7 @@ namespace gbrueckl.PowerBI.API
         }
         private async Task<HttpWebResponse> SendWebRequestAsync(string api, string method, string body = null)
         {
-            HttpWebRequest request = System.Net.WebRequest.Create(string.Format("{0}{1}", PBIApiUrl, api)) as System.Net.HttpWebRequest;
+            HttpWebRequest request = System.Net.WebRequest.Create(string.Format("{0}{1}", PBIApiRootUrl, api)) as System.Net.HttpWebRequest;
             request.KeepAlive = true;
             request.Method = method.ToUpper();
             request.ContentLength = 0;
@@ -336,39 +353,30 @@ namespace gbrueckl.PowerBI.API
         #endregion
 
         #region POST Requests
-        public HttpWebResponse SendPOSTRequest(string api, string json)
+        public HttpWebResponse SendPOSTRequest(string api, string body)
         {
-            return SendApIRequest(api, "POST", json);
+            return SendApIRequest(api, "POST", body);
         }
 
-        public HttpWebResponse SendPOSTRequest(string api, Stream content)
+        public HttpResponseMessage SendPOSTRequest(string api, Stream content, Dictionary<string, string> contentHeaders = null)
         {
-            throw new NotImplementedException("Not yet implemented!");
-            /*
-            var pbixBodyContent = new StreamContent(File.Open(pbixPath, FileMode.Open));
-            // add headers for request bod content
-            pbixBodyContent.Headers.Add("Content-Type", "application/octet-stream");
-            pbixBodyContent.Headers.Add("Content-Disposition",
-                                         @"form-data; name=""file""; filename=""" + pbixFilePath + @"""");
-            // load PBIX content into body using multi-part form data
-            MultipartFormDataContent requestBody = new MultipartFormDataContent(Guid.NewGuid().ToString());
-            requestBody.Add(pbixBodyContent);
-            // create and configure HttpClient
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
-            // post request
-            var response = client.PostAsync(restUrlImportPbix, requestBody).Result;
-            return SendApIRequest(api, "POST", json);
-            */
+            StreamContent streamContent = new StreamContent(content);
+            if (contentHeaders != null)
+            {
+                foreach (KeyValuePair<string, string> header in contentHeaders)
+                {
+                    streamContent.Headers.Add(header.Key, header.Value);
+                }
+            }
+            return SendPOSTStream(PBIApiRootUrl + api, streamContent);
         }
-        public HttpWebResponse SendPOSTRequest(PBIAPI api, string json)
+        public HttpWebResponse SendPOSTRequest(PBIAPI api, string body)
         {
-            return SendPOSTRequest(api.ToString().ToLower(), json);
+            return SendPOSTRequest(api.ToString().ToLower(), body);
         }
-        public HttpWebResponse SendPOSTRequest(string apiUrl, PBIAPI api, string json)
+        public HttpWebResponse SendPOSTRequest(string apiUrl, PBIAPI api, string body)
         {
-            return SendPOSTRequest(apiUrl + "/" + api.ToString().ToLower(), json);
+            return SendPOSTRequest(apiUrl + "/" + api.ToString().ToLower(), body);
         }
         public async Task<HttpWebResponse> SendPOSTRequestAsync(string api, string json)
         {
