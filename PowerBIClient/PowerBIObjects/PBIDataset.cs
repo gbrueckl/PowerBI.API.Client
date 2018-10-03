@@ -278,11 +278,13 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
             if (string.IsNullOrEmpty(Id)) // Dataset was not loaded from PowerBI Service
             {
-                using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "?defaultRetentionPolicy=" + defaultRetentionPolicy.ToString(), PBIJsonHelper.SerializeObject(this)))
+                string json = PBIJsonHelper.SerializeObject(this);
+
+                using (HttpWebResponse response = powerBiAPI.SendPOSTRequest(ApiURL + "?defaultRetentionPolicy=" + defaultRetentionPolicy.ToString(), json))
                 {
                     using (StreamReader streamReader = new StreamReader(response.GetResponseStream(), true))
                     {
-                        string json = streamReader.ReadToEnd();
+                        json = streamReader.ReadToEnd();
 
                         JObject jObj = JObject.Parse(json);
 

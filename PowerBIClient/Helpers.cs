@@ -120,5 +120,12 @@ namespace gbrueckl.PowerBI.API
 
             return cols;
         }
+
+        public static void WriteWarning(string message, params string[] args)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(message, args);
+            Console.ResetColor();
+        }
     }
 }

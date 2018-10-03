@@ -95,7 +95,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
             {
                 if (!string.IsNullOrEmpty(FormatString))
-                    Console.WriteLine("FormatStrings are not supported in Streaming-Mode (column [{0}])!", Name);
+                    Helpers.WriteWarning("FormatStrings are not supported in Streaming-Mode (column [{0}])!", Name);
                 return false;
             }
 
@@ -107,7 +107,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
             {
                 if (!string.IsNullOrEmpty(SortByColumn))
-                    Console.WriteLine("SortByColumns are not supported in Streaming-Mode (column [{0}])!", Name);
+                    Helpers.WriteWarning("SortByColumns are not supported in Streaming-Mode (column [{0}])!", Name);
                 return false;
             }
 
@@ -119,7 +119,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
             {
                 if (IsHidden.HasValue)
-                    Console.WriteLine("IsHidden is not supported in Streaming-Mode (column [{0}])!", Name);
+                    Helpers.WriteWarning("IsHidden is not supported in Streaming-Mode (column [{0}])!", Name);
                 return false;
             }
 
@@ -131,7 +131,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
             {
                 if (DataCategory.HasValue)
-                    Console.WriteLine("DataCategories are not supported in Streaming-Mode (column [{0}])!", Name);
+                    Helpers.WriteWarning("DataCategories are not supported in Streaming-Mode (column [{0}])!", Name);
                 return false;
             }
 
@@ -143,7 +143,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             if (ParentTable == null || ParentTable.ParentDataset == null || ParentTable.ParentDataset.PBIDefaultMode == PBIDefaultMode.Streaming)
             {
                 if (PBISummarizeBy.HasValue)
-                    Console.WriteLine("SummarizeBy is not supported in Streaming-Mode (column [{0}])!", Name);
+                    Helpers.WriteWarning("SummarizeBy is not supported in Streaming-Mode (column [{0}])!", Name);
                 return false;
             }
 

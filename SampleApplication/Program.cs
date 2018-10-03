@@ -17,9 +17,9 @@ namespace SampleApplication
         {
             string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
 
-            PBIAPIClient pbic = new PBIAPIClient(ApplicationID, "myUser@myDomain.com", "Pass@word1234!");
+            PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
 
-            Test_Parameters(pbic);
+            //Test_Parameters(pbic);
             //Test_Import(pbic);
             //Test_GetImports(pbic);
             //Test_GetImports(pbic);
@@ -38,6 +38,7 @@ namespace SampleApplication
             //Sample_Dataset_Refresh(pbic);
 
             //Sample_Dataset_Rebind(pbic);
+            Sample_PushDataset(pbic);
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
@@ -122,13 +123,13 @@ namespace SampleApplication
 
         private static void Test_Rebind(PBIAPIClient pbic)
         {
-            PBIGroup myGroup = pbic; // "My Workspace"
+            PBIGroup myGroup = pbic.GetGroupByName("RebindAPI"); // "My Workspace"
 
-            PBIReport srcReport = myGroup.GetReportByName("myReport");
+            PBIReport srcReport = myGroup.GetReportByName("Report");
 
-            PBIDataset targetDataset = myGroup.GetDatasetByName("myDataset");
+            PBIDataset targetDataset = myGroup.GetDatasetByName("Dataset2");
 
-            srcReport.Clone("myReport_Cloned", myGroup, targetDataset);
+            //srcReport.Clone("Report_Cloned", myGroup, targetDataset);
 
             srcReport.Rebind(targetDataset);
         }
@@ -144,17 +145,15 @@ namespace SampleApplication
 
         private static void Test_Serialization(PBIAPIClient pbic)
         {
-            
-
             PBIDataset dataset = new PBIDataset("myDataset", PBIDefaultMode.Streaming);
 
             dataset.ParentPowerBIAPI = pbic;
             dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
 
             PBITable salesTable = new PBITable("Facts"); // create a PBI table manually
-            salesTable.Columns.Add(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true }); // hiding a column
-            salesTable.Columns.Add(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" }); // setting the Formatstring
-            salesTable.Columns.Add(new PBIColumn("Amount_BASE", PBIDataType.Double) { FormatString = "$ #,##0.00", IsHidden = true });
+            salesTable.AddColumn(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true }); // hiding a column
+            salesTable.AddColumn(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" }); // setting the Formatstring
+            salesTable.AddColumn(new PBIColumn("Amount_BASE", PBIDataType.Double) { FormatString = "$ #,##0.00", IsHidden = true });
 
 
             string x = PBIJsonHelper.SerializeObject(dataset);
@@ -170,9 +169,9 @@ namespace SampleApplication
             dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
 
             PBITable salesTable = new PBITable(tableNameFacts); // create a PBI table manually
-            salesTable.Columns.Add(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true }); // hiding a column
-            salesTable.Columns.Add(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" }); // setting the Formatstring
-            salesTable.Columns.Add(new PBIColumn("Amount_BASE", PBIDataType.Double) { FormatString = "$ #,##0.00", IsHidden = true });
+            salesTable.AddColumn(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true }); // hiding a column
+            salesTable.AddColumn(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" }); // setting the Formatstring
+            salesTable.AddColumn(new PBIColumn("Amount_BASE", PBIDataType.Double) { FormatString = "$ #,##0.00", IsHidden = true });
 
             salesTable.Measures.Add(new PBIMeasure("Sales Amount", "SUM('{0}'[{1}])", tableNameFacts, "Amount_BASE")); // adding a measure
 
@@ -199,7 +198,7 @@ namespace SampleApplication
 
             dataset.Relationships.Add(new PBIRelationship("MyRelationship", salesTable.GetColumnByName("ProductKey"), productsTable.GetColumnByName("ProductKey")));
 
-            Console.Write("Publishing to PowerBI Service ... ");
+            Console.WriteLine("Publishing to PowerBI Service ... ");
             dataset.PublishToPowerBI();
             Console.WriteLine("Done!");
 
@@ -215,6 +214,31 @@ namespace SampleApplication
             salesTable.PushRowToPowerBI(new PBIRow(new Dictionary<string, object> { { "ProductKey", 2 }, { "SalesDate", DateTime.Now }, { "Amount_BASE", 150.70 } }));
 
             productsTable.PushRowsToPowerBI();
+        }
+
+        private static void Sample_PushDataset(PBIAPIClient pbic)
+        {
+            string datasetName = "MyPushDataset";
+            string tableNameFacts = "MySalesTable";
+
+            PBIDataset dataset = new PBIDataset(datasetName, PBIDefaultMode.Push);
+            dataset.ParentPowerBIAPI = pbic;
+            dataset.SyncFromPowerBI(); // check if a Dataset with the same ID or Name already exists in the PowerBI-Service
+
+            PBITable salesTable = new PBITable(tableNameFacts); // create a PBI table manually
+            salesTable.AddColumn(new PBIColumn("ProductKey", PBIDataType.Int64) { IsHidden = true }); // hiding a column
+            salesTable.AddColumn(new PBIColumn("SalesDate", PBIDataType.DateTime) { FormatString = "yyyy-MM-dd" }); // setting the Formatstring
+            salesTable.AddColumn(new PBIColumn("Amount_BASE", PBIDataType.Double) { FormatString = "$ #,##0.00", IsHidden = true });
+            salesTable.AddColumn(new PBIColumn("Quantity_BASE", PBIDataType.Int64) { FormatString = "#,##0", IsHidden = true });
+
+            salesTable.Measures.Add(new PBIMeasure("Sales Amount", "SUM('{0}'[{1}])", tableNameFacts, "Amount_BASE")); // adding a measure
+            salesTable.Measures.Add(new PBIMeasure("Quantity", "SUM('{0}'[{1}])", tableNameFacts, "Quantity_BASE")); // adding a measure
+
+            dataset.AddOrUpdateTable(salesTable);
+
+            Console.WriteLine("Publishing to PowerBI Service ... ");
+            dataset.PublishToPowerBI();
+            Console.WriteLine("Done!");
         }
 
         private static void Sample_DataTable(PBIAPIClient pbic)

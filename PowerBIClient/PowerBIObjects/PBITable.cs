@@ -113,6 +113,11 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         #endregion
 
         #region Public Functions
+        public void AddColumn(PBIColumn column)
+        {
+            column.ParentTable = this;
+            Columns.Add(column);
+        }
         public PBIColumn GetColumnByName(string columnName)
         {
             return _columns.Single<PBIColumn>(x => x.Name == columnName);
