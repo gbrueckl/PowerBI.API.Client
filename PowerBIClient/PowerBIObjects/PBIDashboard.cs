@@ -17,6 +17,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         #region Constructors
         public PBIDashboard() { }
         #endregion
+
         #region Private Properties for Serialization
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         private string ODataContext;
@@ -29,6 +30,9 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         [JsonProperty(PropertyName = "isReadOnly", Required = Required.Default)]
         public bool IsReadOnly;
+
+        [JsonProperty(PropertyName = "embedUrl", Required = Required.Default)]
+        public string EmbedUrl;
 
         [JsonIgnore]
         private List<PBITile> _tiles;
