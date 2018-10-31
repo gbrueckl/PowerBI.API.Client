@@ -31,7 +31,8 @@ static void Main(string[] args)
 ```
 
 # Setup
-The setup is quite easy, you just need to download the pre-built DLL from this repository ([/PowerBIClient/Download/gbrueckl.PowerBI.API.dll](https://github.com/gbrueckl/PowerBI.API.Client/blob/master/PowerBIClient/Download/gbrueckl.PowerBI.API.dll)) and add it to your C# project. It was built using .Net framework 4.5!
+The setup is quite easy, clone the project and compile the project using Visual Studio. This project targets .NET Framework v4.5!
+
 There are also some NuGet packages that are required:
 - Microsoft.PowerBI.Api
 - Microsoft.IdentityModel.Clients.ActiveDirectory
