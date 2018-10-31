@@ -124,7 +124,8 @@ namespace SampleApplication
 
         private static void Test_GetDashboard(PBIAPIClient pbic)
         {
-            PBIDashboard dashboard = pbic.GetDashboardByName("Google Analytics");
+            PBIGroup group = pbic.GetGroupByID("75c2b5c8-b698-4480-ad48-97a190cf67ee");
+            PBIDashboard dashboard = group.GetDashboardByID("56ce2b48-9e5c-4ecc-a8aa-a65b7b6bfdc4");
             PBITile tile = dashboard.Tiles[0];
 
             Console.WriteLine(dashboard.DisplayName);

@@ -175,6 +175,19 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        public PBIReport GetReportByID(string id)
+        {
+            try
+            {
+                return Reports.Single(x => string.Equals(x.Id, id, StringComparison.InvariantCultureIgnoreCase));
+            }
+            catch (Exception e)
+            {
+                //return null;
+                throw new KeyNotFoundException(string.Format("No Report with ID '{0}' could be found in PowerBI!", id), e);
+            }
+        }
+
         public PBIDashboard GetDashboardByName(string name)
         {
             try
@@ -188,6 +201,18 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
+        public PBIDashboard GetDashboardByID(string id)
+        {
+            try
+            {
+                return Dashboards.Single(x => string.Equals(x.Id, id, StringComparison.InvariantCultureIgnoreCase));
+            }
+            catch (Exception e)
+            {
+                //return null;
+                throw new KeyNotFoundException(string.Format("No Dashboard with ID '{0}' could be found in PowerBI!", id), e);
+            }
+        }
         public void AddGroupMember(string username, PBIGroupAccessRight accessRight)
         {
             PBIGroupMember newMember = new PBIGroupMember() { Name = username, AccessRight = accessRight };
