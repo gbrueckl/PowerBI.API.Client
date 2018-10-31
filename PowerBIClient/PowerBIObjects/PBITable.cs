@@ -70,7 +70,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         public new List<PBIRow> Rows { get { return null; } set { } }
 
         [JsonIgnore]
-        public List<PBIMeasure> Measures { get { return _measures; } set { _measures = value; } }
+        public new List<PBIMeasure> Measures { get { return _measures; } set { _measures = value; } }
 
         [JsonIgnore]
         public List<PBIRow> DataRows { get; set; }

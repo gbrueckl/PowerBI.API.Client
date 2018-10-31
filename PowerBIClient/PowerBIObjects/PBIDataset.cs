@@ -50,7 +50,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         #region Public Properties
         [JsonProperty(PropertyName = "relationships", NullValueHandling = NullValueHandling.Ignore)]
-        public List<PBIRelationship> Relationships { get; set; }
+        public new List<PBIRelationship> Relationships { get; set; }
 
         [JsonProperty(PropertyName = "datasources", NullValueHandling = NullValueHandling.Ignore)]
         public new List<PBIDatasource> Datasources { get { return null; } set { } }

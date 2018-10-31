@@ -27,6 +27,7 @@ namespace SampleApplication
             //Test_AddGroupMember(pbic);
             //Test_GetGroupMembers(pbic);
             //Test_CreateGroup(pbic);
+            Test_GetDashboard(pbic);
             //Test_Rebind(pbic);
             //Test_Export(pbic);
             //Test_Serialization(pbic);
@@ -38,7 +39,7 @@ namespace SampleApplication
             //Sample_Dataset_Refresh(pbic);
 
             //Sample_Dataset_Rebind(pbic);
-            Sample_PushDataset(pbic);
+            //Sample_PushDataset(pbic);
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
@@ -121,13 +122,21 @@ namespace SampleApplication
             Console.WriteLine(tile.ToString());
         }
 
+        private static void Test_GetDashboard(PBIAPIClient pbic)
+        {
+            PBIDashboard dashboard = pbic.GetDashboardByName("Google Analytics");
+            PBITile tile = dashboard.Tiles[0];
+
+            Console.WriteLine(dashboard.DisplayName);
+        }
+
         private static void Test_Rebind(PBIAPIClient pbic)
         {
             PBIGroup myGroup = pbic.GetGroupByName("RebindAPI"); // "My Workspace"
 
             PBIReport srcReport = myGroup.GetReportByName("Report");
 
-            PBIDataset targetDataset = myGroup.GetDatasetByName("Dataset2");
+            PBIDataset targetDataset = myGroup.GetDatasetByName("Dataset1_Copy");
 
             //srcReport.Clone("Report_Cloned", myGroup, targetDataset);
 

@@ -9,10 +9,11 @@ using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json;
+using Microsoft.PowerBI.Api.V2.Models;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects
 {
-    public class PBIDashboard : IPBIObject
+    public class PBIDashboard : Dashboard, IPBIObject
     {
         #region Constructors
         public PBIDashboard() { }
@@ -20,15 +21,6 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
         #region Private Properties for Serialization
         [JsonProperty(PropertyName = "@odata.context", NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         private string ODataContext;
-
-        [JsonProperty(PropertyName = "id", Required = Required.Always)]
-        public string Id { get; set; }
-
-        [JsonProperty(PropertyName = "displayName", Required = Required.Always)]
-        public string DisplayName { get; set; }
-
-        [JsonProperty(PropertyName = "isReadOnly", Required = Required.Default)]
-        public bool IsReadOnly;
 
         [JsonIgnore]
         private List<PBITile> _tiles;

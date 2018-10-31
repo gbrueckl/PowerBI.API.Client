@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects
 {
-    public class PBIColumn : Column
+    public class PBIColumn : Column, IPBIObject
     {
         #region Constructors
         public PBIColumn(string name, PBIDataType dataType)
@@ -87,6 +87,48 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         [JsonIgnore]
         public PBITable ParentTable { get; set; }
+
+        public string ApiURL
+        {
+            get { return null; }
+        }
+
+        public PBIGroup ParentGroup
+        {
+            get
+            {
+                return ((IPBIObject)ParentTable).ParentGroup;
+            }
+        }
+
+        public IPBIObject ParentObject
+        {
+            get
+            {
+                return ((IPBIObject)ParentTable).ParentObject;
+            }
+        }
+
+        public PBIAPIClient ParentPowerBIAPI
+        {
+            get
+            {
+                return ((IPBIObject)ParentTable).ParentPowerBIAPI;
+            }
+            set {
+                throw new NotImplementedException("Cannot set the ParentPowerBIAPI of a Column. It is always derived from its ParentTable!");
+            }
+        }
+        public string Id
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+            }
+        }
         #endregion
 
         #region ShouldSerialize-Functions

@@ -179,7 +179,6 @@ namespace gbrueckl.PowerBI.API
             }
         }
 
-
         #region Public Functions
         public PBIGroup GetGroupByID(string id)
         {
@@ -382,11 +381,11 @@ namespace gbrueckl.PowerBI.API
         {
             return await SendWebRequestAsync(api, "POST", json);
         }
-
+        /*
         public async Task<HttpWebResponse> SendPOSTRequestAsync(string api, Stream content)
         {
             throw new NotImplementedException("Not yet implemented!");
-            /*
+
             var pbixBodyContent = new StreamContent(File.Open(pbixPath, FileMode.Open));
             // add headers for request bod content
             pbixBodyContent.Headers.Add("Content-Type", "application/octet-stream");
@@ -402,8 +401,9 @@ namespace gbrueckl.PowerBI.API
             // post request
             var response = client.PostAsync(restUrlImportPbix, requestBody).Result;
             return await SendApIRequestAsync(api, "POST", json);
-            */
+            
         }
+        */
         public async Task<HttpWebResponse> SendPOSTRequestAsync(PBIAPI api, string json)
         {
             return await SendWebRequestAsync(api.ToString().ToLower(), "POST", json);

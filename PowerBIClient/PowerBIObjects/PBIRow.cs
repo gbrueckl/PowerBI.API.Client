@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace gbrueckl.PowerBI.API.PowerBIObjects
 {
-    public class PBIRow : Row 
+    public class PBIRow : Row, IPBIObject 
     {
         #region Constructors
         public PBIRow(Dictionary<string, object> values)
@@ -32,6 +32,38 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         [JsonIgnore]
         public string JSON { get { return PBIJsonHelper.SerializeObject(this); } }
+
+        public string ApiURL
+        {
+            get { return null; }
+        }
+
+        public PBIGroup ParentGroup
+        {
+            get
+            {
+                return ((IPBIObject)ParentTable).ParentGroup;
+            }
+        }
+
+        public IPBIObject ParentObject
+        {
+            get
+            {
+                return ((IPBIObject)ParentTable).ParentObject;
+            }
+        }
+
+        public PBIAPIClient ParentPowerBIAPI
+        {
+            get
+            {
+                return ((IPBIObject)ParentTable).ParentPowerBIAPI;
+            }
+            set {
+                throw new NotImplementedException("Cannot set the ParentPowerBIAPI of a Row. It is always derived from its ParentTable!");
+            }
+        }
         #endregion
 
         #region Public Functions
