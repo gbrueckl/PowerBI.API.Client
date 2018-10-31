@@ -26,10 +26,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
 
         [DataMember(Name = "title", IsRequired = true)]
         private string _title;
-
-        [DataMember(Name = "subTitle", IsRequired = false)]
-        private string _subTitle;
-
+        
         [DataMember(Name = "embedUrl", IsRequired = true)]
         private string _embedUrl;
 
@@ -55,13 +52,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             get { return _title; }
             set { _title = value; }
         }
-
-        public string SubTitle
-        {
-            get { return _subTitle; }
-            set { _subTitle = value; }
-        }
-
+        
         public string EmbedURL
         {
             get { return _embedUrl; }
