@@ -38,15 +38,6 @@ namespace gbrueckl.PowerBI.API
         CultureInfo _culture;
 
         #region Constructors
-
-        private void Initialize()
-        {
-            base.ParentPowerBIAPI = this;
-            base.ApiURL = "/v1.0/myorg";
-
-            _style = NumberStyles.Number;
-            _culture = CultureInfo.CreateSpecificCulture("en-US");
-        }
         public PBIAPIClient(string clientID)
         {
             _clientID = clientID;
@@ -71,6 +62,14 @@ namespace gbrueckl.PowerBI.API
             Initialize();
 
             Connect(userName, password);
+        }
+        private void Initialize()
+        {
+            base.ParentPowerBIAPI = this;
+            base.ApiURL = "/v1.0/myorg";
+
+            _style = NumberStyles.Number;
+            _culture = CultureInfo.CreateSpecificCulture("en-US");
         }
         #endregion
 

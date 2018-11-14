@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package>
+  <metadata>
+    <id>gbrueckl.PowerBI.API</id>
+    <version>1.0.0</version>
+    <title>Object Model for PowerBI Rest API</title>
+    <authors>Gerhard Brueckl</authors>
+    <owners>Gerhard Brueckl</owners>
+    <licenseUrl>https://github.com/gbrueckl/PowerBI.API.Client/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/gbrueckl/PowerBI.API.Client</projectUrl>
+    <iconUrl>https://www.website.com/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A package that allows you to interact with the PowerBI Rest API using regular C# objects.</description>
+    <releaseNotes>Initial 1.0.0 release</releaseNotes>
+    <copyright>Copyright 2018 Gerhard Brueckl</copyright>
+    <tags>PowerBI REST API Microsoft Wrapper</tags>
+    <dependencies>
+      <dependency id="Microsoft.IdentityModel.Clients.ActiveDirectory" version="3.19.2" />
+      <dependency id="Microsoft.PowerBI.Api" version="2.0.12" />
+      <dependency id="Microsoft.Rest.ClientRuntime" version="2.3.6" />
+      <dependency id="Newtonsoft.Json" version="11.0.1" />
+    </dependencies>
+    <summary> A summary of your package </summary>
+  </metadata>
+  <files>
+    <file src=".\..\PowerBIClient\bin\Release\gbrueckl.PowerBI.API.dll" target="lib\net45" />
+  </files>
+</package>
