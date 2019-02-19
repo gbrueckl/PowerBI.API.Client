@@ -180,6 +180,17 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             return null;
         }
 
+        public PBITable GetTableByID(string id)
+        {
+            foreach (PBITable tbl in Tables)
+            {
+                if (tbl.Id == id)
+                    return tbl;
+            }
+
+            return null;
+        }
+
         public void LoadTablesFromPowerBI()
         {
             PBIObjectList<PBITable> objList = JsonConvert.DeserializeObject<PBIObjectList<PBITable>>(ParentPowerBIAPI.SendGETRequest(ApiURL, PBIAPI.Tables).ResponseToString());
@@ -343,11 +354,14 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
                 {
                     this.Id = temp.Id;
                     this.AddRowsAPIEnabled = temp.AddRowsAPIEnabled;
+                    this.ConfiguredBy = temp.ConfiguredBy;
+                    this.DefaultMode = temp.DefaultMode;
+                    this.Relationships = temp.Relationships;
+                    this.Datasources = temp.Datasources;
+                    this.GatewayDatasources = temp.GatewayDatasources;
 
-                    foreach (PBITable table in temp.Tables)
-                    {
-                        this.AddOrUpdateTable(table);
-                    }
+                    this.LoadTablesFromPowerBI();
+                    this.LoadDatasourcesFromPowerBI();
                 }
             }
             catch (Exception e)
