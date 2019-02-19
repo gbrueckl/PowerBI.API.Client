@@ -16,8 +16,10 @@ namespace SampleApplication
         static void Main(string[] args)
         {
             string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
+            string Username = ConfigurationManager.AppSettings["PBI_Username"];
+            string Password = ConfigurationManager.AppSettings["PBI_Password"];
 
-            PBIAPIClient pbic = new PBIAPIClient(ApplicationID);
+            PBIAPIClient pbic = new PBIAPIClient(ApplicationID, Username, Password);
 
             //Test_Parameters(pbic);
             //Test_Import(pbic);
@@ -27,7 +29,7 @@ namespace SampleApplication
             //Test_AddGroupMember(pbic);
             //Test_GetGroupMembers(pbic);
             //Test_CreateGroup(pbic);
-            Test_GetDashboard(pbic);
+            //Test_GetDashboard(pbic);
             //Test_Rebind(pbic);
             //Test_Export(pbic);
             //Test_Serialization(pbic);
@@ -39,7 +41,7 @@ namespace SampleApplication
             //Sample_Dataset_Refresh(pbic);
 
             //Sample_Dataset_Rebind(pbic);
-            //Sample_PushDataset(pbic);
+            Sample_PushDataset(pbic);
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
