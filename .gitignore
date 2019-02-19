@@ -1,6 +1,6 @@
 ﻿## files containing sensitive Information
 MyPrivateConfig.json
-App.config
+[Aa]pp.config
 
 # NuGet
 nuget.exe
