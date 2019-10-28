@@ -6,9 +6,9 @@
     <title>C# Object Model for PowerBI Rest API</title>
     <authors>Gerhard Brueckl</authors>
     <owners>Gerhard Brueckl</owners>
-    <license>https://github.com/gbrueckl/PowerBI.API.Client/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/gbrueckl/PowerBI.API.Client</projectUrl>
-    <icon>https://raw.githubusercontent.com/gbrueckl/PowerBI.API.Client/master/PowerBIClient/powerbi_icon.png</iconUrl>
+	<projectUrl>https://github.com/gbrueckl/PowerBI.API.Client</projectUrl>
+    <license type="file">LICENSE.txt</license>
+    <icon>powerbi_icon.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A C# wrapper for the Power BI REST API which allows you to easily integrate the Power BI API into your C# application. All objects from PowerBI are represented as native C# objects including all properties, functions/methods, etc. The Power BI REST API is very well documented here: https://docs.microsoft.com/en-us/rest/api/power-bi/ . The wrapper includes most of the functionality that available via the REST API but due to the high frequency of updates this wrapper may be a bit slower to integrate the latest features.</description>
     <releaseNotes>Fixed documentation</releaseNotes>
@@ -24,5 +24,7 @@
   </metadata>
   <files>
     <file src=".\..\PowerBIClient\bin\Release\gbrueckl.PowerBI.API.dll" target="lib\net45" />
+	<file src=".\..\LICENSE.txt" target="" />
+	<file src=".\..\powerbi_icon.png" target="" />
   </files>
 </package>
