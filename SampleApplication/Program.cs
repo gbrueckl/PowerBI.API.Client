@@ -8,6 +8,7 @@ using gbrueckl.PowerBI.API.PowerBIObjects;
 using System.Configuration;
 using System.Threading;
 using System.Data;
+using System.Net;
 
 namespace SampleApplication
 {
@@ -15,12 +16,14 @@ namespace SampleApplication
     {
         static void Main(string[] args)
         {
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+
             string ApplicationID = ConfigurationManager.AppSettings["PBI_ApplicationID"];
             string Username = ConfigurationManager.AppSettings["PBI_Username"];
             string Password = ConfigurationManager.AppSettings["PBI_Password"];
 
             PBIAPIClient pbic = new PBIAPIClient(ApplicationID, Username, Password);
-
+            Test_GetReports(pbic);
             //Test_Parameters(pbic);
             //Test_Import(pbic);
             //Test_GetImports(pbic);
@@ -41,10 +44,19 @@ namespace SampleApplication
             //Sample_Dataset_Refresh(pbic);
 
             //Sample_Dataset_Rebind(pbic);
-            Sample_PushDataset(pbic);
+            //Sample_PushDataset(pbic);
 
             Console.Write("Press <ENTER> to quit. ");
             Console.ReadLine();
+        }
+
+        private static void Test_GetReports(PBIAPIClient pbic)
+        {
+            PBIGroup myGroup = pbic; // "My Workspace"
+            //var x = pbic.Groups;
+            //x.Count();
+            PBIReport report = myGroup.GetReportByID("9ff0b4cd-2105-4405-857b-d51ffb06c14a");
+            report.Export("D:\\Desktop\\MyReport.pdf");
         }
 
         private static void Test_Parameters(PBIAPIClient pbic)

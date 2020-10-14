@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>gbrueckl.PowerBI.API</id>
-    <version>1.1.0</version>
+    <version>1.1.2</version>
     <title>C# Object Model for PowerBI Rest API</title>
     <authors>Gerhard Brueckl</authors>
     <owners>Gerhard Brueckl</owners>

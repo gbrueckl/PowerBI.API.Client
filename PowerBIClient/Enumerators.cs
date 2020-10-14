@@ -89,6 +89,7 @@ namespace gbrueckl.PowerBI.API
         Admin,
         Contributor,
         Member,
+        Viewer,
         None
     }
 
@@ -98,5 +99,12 @@ namespace gbrueckl.PowerBI.API
         CreateOrOverwrite,
         Ignore,
         Overwrite
+    }
+
+    public enum PBIPrincipalType
+    {
+        App,
+        Group,
+        User
     }
 }
