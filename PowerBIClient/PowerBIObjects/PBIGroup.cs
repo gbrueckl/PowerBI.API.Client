@@ -242,7 +242,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             }
         }
 
-        public PBIImport ImportPBIX(string displayName, string pbixPath, PBIImportConflictHandlerMode nameConflict = PBIImportConflictHandlerMode.Abort)
+        public PBIImport ImportPBIX(string displayName, string pbixPath, PBIImportConflictHandlerMode nameConflict = PBIImportConflictHandlerMode.Abort, int timeout = 100)
         {
             string fullUrl = string.Format("{0}/{1}?datasetDisplayName={2}&nameConflict={3}", ApiURL, PBIAPI.Imports.ToString().ToLower(), displayName, nameConflict.ToString());
 
@@ -251,7 +251,7 @@ namespace gbrueckl.PowerBI.API.PowerBIObjects
             contentHeaders.Add("Content-Type", "application/octet-stream");
             contentHeaders.Add("Content-Disposition", @"form-data; name=""file""; filename=""" + pbixPath + @"""");
 
-            using (HttpResponseMessage response = ParentPowerBIAPI.SendPOSTRequest(fullUrl, content, contentHeaders))
+            using (HttpResponseMessage response = ParentPowerBIAPI.SendPOSTRequest(fullUrl, content, contentHeaders, timeout))
             {
                 string result = response.ResponseToString();
 

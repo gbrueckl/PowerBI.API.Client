@@ -227,7 +227,7 @@ namespace gbrueckl.PowerBI.API
                 throw e;
             }
         }
-        public HttpResponseMessage SendPOSTStream(string url, StreamContent content)
+        public HttpResponseMessage SendPOSTStream(string url, StreamContent content, int timeout = 100)
         {
             MultipartFormDataContent requestBody = new MultipartFormDataContent(Guid.NewGuid().ToString());
             requestBody.Add(content);
@@ -235,6 +235,7 @@ namespace gbrueckl.PowerBI.API
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + ParentPowerBIAPI.AccessToken);
+            client.Timeout = TimeSpan.FromSeconds(timeout);
             // post request
             var response = client.PostAsync(url, requestBody).Result;
             // check for success
@@ -286,13 +287,16 @@ namespace gbrueckl.PowerBI.API
         #endregion
 
         #region Private WebRequest Methods
-        private HttpWebResponse SendApIRequest(string api, string method, string body = null)
+        private HttpWebResponse SendApIRequest(string api, string method, string body = null, int timeout = 100)
         {
             HttpWebResponse response = null;
 
             HttpWebRequest request = System.Net.WebRequest.Create(string.Format("{0}{1}", PBIApiRootUrl, api)) as System.Net.HttpWebRequest;
             request.KeepAlive = true;
             request.Method = method.ToUpper();
+            request.Timeout = timeout;
+            request.ContinueTimeout = timeout;
+            request.ReadWriteTimeout = timeout;
             request.ContentLength = 0;
             request.ContentType = "application/json; charset=utf-8";
             request.Headers.Add("Authorization", String.Format("Bearer {0}", AccessToken));
@@ -325,11 +329,14 @@ namespace gbrueckl.PowerBI.API
             }
             return response;
         }
-        private async Task<HttpWebResponse> SendWebRequestAsync(string api, string method, string body = null)
+        private async Task<HttpWebResponse> SendWebRequestAsync(string api, string method, string body = null, int timeout = 100)
         {
             HttpWebRequest request = System.Net.WebRequest.Create(string.Format("{0}{1}", PBIApiRootUrl, api)) as System.Net.HttpWebRequest;
             request.KeepAlive = true;
             request.Method = method.ToUpper();
+            request.Timeout = timeout;
+            request.ContinueTimeout = timeout;
+            request.ReadWriteTimeout = timeout;
             request.ContentLength = 0;
             request.ContentType = "application/json; charset=utf-8";
             request.Headers.Add("Authorization", String.Format("Bearer {0}", AccessToken));
@@ -351,12 +358,12 @@ namespace gbrueckl.PowerBI.API
         #endregion
 
         #region POST Requests
-        public HttpWebResponse SendPOSTRequest(string api, string body)
+        public HttpWebResponse SendPOSTRequest(string api, string body, int timeout = 100)
         {
-            return SendApIRequest(api, "POST", body);
+            return SendApIRequest(api, "POST", body, timeout);
         }
 
-        public HttpResponseMessage SendPOSTRequest(string api, Stream content, Dictionary<string, string> contentHeaders = null)
+        public HttpResponseMessage SendPOSTRequest(string api, Stream content, Dictionary<string, string> contentHeaders = null, int timeout = 100)
         {
             StreamContent streamContent = new StreamContent(content);
             if (contentHeaders != null)
@@ -366,19 +373,19 @@ namespace gbrueckl.PowerBI.API
                     streamContent.Headers.Add(header.Key, header.Value);
                 }
             }
-            return SendPOSTStream(PBIApiRootUrl + api, streamContent);
+            return SendPOSTStream(PBIApiRootUrl + api, streamContent, timeout);
         }
-        public HttpWebResponse SendPOSTRequest(PBIAPI api, string body)
+        public HttpWebResponse SendPOSTRequest(PBIAPI api, string body, int timeout = 100)
         {
-            return SendPOSTRequest(api.ToString().ToLower(), body);
+            return SendPOSTRequest(api.ToString().ToLower(), body, timeout);
         }
-        public HttpWebResponse SendPOSTRequest(string apiUrl, PBIAPI api, string body)
+        public HttpWebResponse SendPOSTRequest(string apiUrl, PBIAPI api, string body, int timeout = 100)
         {
-            return SendPOSTRequest(apiUrl + "/" + api.ToString().ToLower(), body);
+            return SendPOSTRequest(apiUrl + "/" + api.ToString().ToLower(), body, timeout);
         }
-        public async Task<HttpWebResponse> SendPOSTRequestAsync(string api, string json)
+        public async Task<HttpWebResponse> SendPOSTRequestAsync(string api, string json, int timeout = 100)
         {
-            return await SendWebRequestAsync(api, "POST", json);
+            return await SendWebRequestAsync(api, "POST", json, timeout);
         }
         /*
         public async Task<HttpWebResponse> SendPOSTRequestAsync(string api, Stream content)
@@ -403,13 +410,13 @@ namespace gbrueckl.PowerBI.API
             
         }
         */
-        public async Task<HttpWebResponse> SendPOSTRequestAsync(PBIAPI api, string json)
+        public async Task<HttpWebResponse> SendPOSTRequestAsync(PBIAPI api, string json, int timeout = 100)
         {
-            return await SendWebRequestAsync(api.ToString().ToLower(), "POST", json);
+            return await SendWebRequestAsync(api.ToString().ToLower(), "POST", json, timeout);
         }
-        public Task<HttpWebResponse> SendPOSTRequestAsync(string apiUrl, PBIAPI api, string json)
+        public Task<HttpWebResponse> SendPOSTRequestAsync(string apiUrl, PBIAPI api, string json, int timeout = 100)
         {
-            return SendWebRequestAsync(apiUrl + "/" + api.ToString().ToLower(), "POST", json);
+            return SendWebRequestAsync(apiUrl + "/" + api.ToString().ToLower(), "POST", json, timeout);
         }
         #endregion
 
